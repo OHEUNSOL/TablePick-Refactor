@@ -6,6 +6,14 @@
 
 ---
 
+## 🔗 관련 레포지토리
+- [TablePick-Payment-Server](https://github.com/OHEUNSOL/TablePick-Payment)  
+  → 예약 서비스와 분리된 **결제 서버**, Kafka 이벤트 및 외부 결제 API 처리 담당
+- [TablePick-External-Payment-API](https://github.com/OHEUNSOL/TablePick-Fake-Pg)  
+  → **외부 결제 API 서버** 시뮬레이션, 테스트 및 장애 대응 로직 검증용
+
+---  
+
 ## 🚀 프로젝트 개요
 TablePick은 대규모 트래픽을 처리할 수 있는 **레스토랑 예약·결제 플랫폼**입니다.  
 예약 슬롯 관리, 결제 처리, 성능 최적화를 중점적으로 개선했습니다.
