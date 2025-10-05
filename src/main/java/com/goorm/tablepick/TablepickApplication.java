@@ -1,4 +1,4 @@
-package com.example.tablepick;
+package com.goorm.tablepick;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

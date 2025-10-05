@@ -32,7 +32,42 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
+
+    // security & oauth 2.0
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Google Guava for batch processing
+    implementation 'com.google.guava:guava:33.1.0-jre'
+
+    // micrometer
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // Monitoring
+    implementation 'io.micrometer:micrometer-core'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'      // 기존 MVC
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'  // WebClient 제공
+
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.apache.kafka:kafka-streams:3.6.1'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
