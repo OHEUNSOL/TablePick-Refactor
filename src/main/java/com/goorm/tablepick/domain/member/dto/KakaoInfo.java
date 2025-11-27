@@ -41,13 +41,13 @@ public class KakaoInfo implements OAuthInfo {
                 .email(this.email)
                 .nickname(this.nickname)
                 .profileImage(this.profileImage)
-                .birthdate(this.birthday)
-                .phoneNumber(this.phoneNumber)
-                .gender(Gender.valueOf(this.gender.toUpperCase()))
+                //.birthdate(this.birthday)
+                //.phoneNumber(this.phoneNumber)
+                //.gender(Gender.valueOf(this.gender.toUpperCase()))
                 .roles(AccountRole.USER)
-                .isMemberDeleted(false)
-                .provider(this.provider)
-                .providerId(this.providerId)
+                //.isMemberDeleted(false)
+                //.provider(this.provider)
+                //.providerId(this.providerId)
                 .build();
     }
 }

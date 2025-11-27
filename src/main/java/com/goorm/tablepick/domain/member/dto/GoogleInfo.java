@@ -28,9 +28,8 @@ public class GoogleInfo implements OAuthInfo {
                 .nickname(this.nickname)
                 .profileImage(this.profileImage)
                 .roles(AccountRole.USER)
-                .isMemberDeleted(false)
-                .provider(this.provider)
-                .providerId(this.providerId)
+//                .provider(this.provider)
+//                .providerId(this.providerId)
                 .build();
     }
 

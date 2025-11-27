@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -35,6 +37,24 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     List<Restaurant> findByNameIgnoreCase(String newName);
 
-
-
+    @Query("SELECT r FROM Restaurant r " +
+            "JOIN r.restaurantCategory rc " +
+            "WHERE " +
+            // 1. 카테고리
+            "(:categoryId IS NULL OR rc.id = :categoryId) " +
+            // 2. 예약 시간 (EXISTS 서브쿼리)
+            "AND (" +
+            "    (:reservationDate IS NULL OR :reservationTime IS NULL) " +
+            "    OR EXISTS (SELECT s.id FROM ReservationSlot s " +
+            "                 WHERE s.restaurant = r " +
+            "                 AND s.date = :reservationDate " +
+            "                 AND s.time = :reservationTime " +
+            "                 AND s.count > 0) " +
+            ")"
+    )
+    Page<Restaurant> findRestaurantsByComplexCondition_Problematic(
+            @Param("categoryId") Long categoryId,
+            @Param("reservationDate") LocalDate reservationDate,
+            @Param("reservationTime") LocalTime reservationTime,
+            Pageable pageable);
 }

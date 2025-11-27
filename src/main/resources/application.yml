@@ -10,19 +10,24 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
         show_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
-#        session_factory:
-#          statement_inspector: ding.co.backendportfolio.chapter5.config.QueryCountInspector
+        session_factory:
+          statement_inspector: com.goorm.tablepick.domain.reservation.config.QueryCountInspector
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
   kafka:
-    listener:
-      auto-startup: false
+    # Kafka 서버 주소
+    bootstrap-servers: localhost:9092
+    producer:
+      # 메시지의 key 직렬화 방식 : 자바 객체를 문자열(String)로 변환해서 Kafka에 전송
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 메시지의 value 직렬화 방식 : 자바 객체를 문자열(String)로 변환해서 Kafka에 전송
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 jwt:
   secret: ${JWT_SECRET:VmVyeVNlY3JldEtleUZvclRlc3RpbmdQdXJwb3NlczEyMzQ1Njcetvsdfweethdxdf=}

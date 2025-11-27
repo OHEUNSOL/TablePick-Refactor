@@ -1,6 +1,7 @@
 package com.goorm.tablepick.domain.restaurant.entity;
 
 import com.goorm.tablepick.domain.reservation.entity.ReservationSlot;
+import com.goorm.tablepick.domain.tag.entity.RestaurantTag;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,22 +31,22 @@ public class Restaurant {
     private Double ycoordinate;
     
     private Long maxCapacity;
-    
-    @Builder.Default
+
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<ReservationSlot> reservationSlots = new ArrayList<>();
-    
-    @Builder.Default
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<Menu> menus = new ArrayList<>();
-    
-    @Builder.Default
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<RestaurantImage> restaurantImages = new ArrayList<>();
-    
-    @Builder.Default
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<RestaurantOperatingHour> restaurantOperatingHours = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    private List<RestaurantTag> restaurantTags = new ArrayList<>();
     
     @ManyToOne
     @JoinColumn(name = "restaurant_category_id")

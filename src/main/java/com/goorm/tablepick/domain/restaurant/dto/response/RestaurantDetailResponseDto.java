@@ -49,34 +49,34 @@ public class RestaurantDetailResponseDto {
     private final Double yCoordinate;
 
 
-    public static RestaurantDetailResponseDto fromEntity(Restaurant restaurant, List<String> topTags) {
-        return RestaurantDetailResponseDto.builder()
-                .id(restaurant.getId())
-                .name(restaurant.getName())
-                .address(restaurant.getAddress())
-                .restaurantPhoneNumber(restaurant.getRestaurantPhoneNumber())
-                .restaurantCategory(restaurant.getRestaurantCategory())
-                .restaurantImage(
-                        restaurant.getRestaurantImages() != null && !restaurant.getRestaurantImages().isEmpty()
-                                ? RestaurantImageResponseDto.from(restaurant.getRestaurantImages().get(0))
-                                : null
-                )
-                .restaurantOperatingHours(
-                        restaurant.getRestaurantOperatingHours() != null
-                                ? restaurant.getRestaurantOperatingHours().stream()
-                                .map(RestaurantOperatingHourResponseDto::from)
-                                .collect(Collectors.toList())
-                                : Collections.emptyList()
-                )
-                .restaurantTags(topTags != null ? topTags : Collections.emptyList())
-                .menus(restaurant.getMenus() != null
-                        ? restaurant.getMenus().stream()
-                        .map(menu -> new MenuResponseDto(menu.getName(), menu.getPrice()))
-                        .collect(Collectors.toList())
-                        : Collections.emptyList())
-                .xCoordinate(restaurant.getXcoordinate())
-                .yCoordinate(restaurant.getYcoordinate())
-                .build();
-    }
+//    public static RestaurantDetailResponseDto fromEntity(Restaurant restaurant, List<String> topTags) {
+//        return RestaurantDetailResponseDto.builder()
+//                .id(restaurant.getId())
+//                .name(restaurant.getName())
+//                .address(restaurant.getAddress())
+//                .restaurantPhoneNumber(restaurant.getRestaurantPhoneNumber())
+//                .restaurantCategory(restaurant.getRestaurantCategory())
+//                .restaurantImage(
+//                        restaurant.getRestaurantImages() != null && !restaurant.getRestaurantImages().isEmpty()
+//                                ? RestaurantImageResponseDto.from(restaurant.getRestaurantImages().get(0))
+//                                : null
+//                )
+//                .restaurantOperatingHours(
+//                        restaurant.getRestaurantOperatingHours() != null
+//                                ? restaurant.getRestaurantOperatingHours().stream()
+//                                .map(RestaurantOperatingHourResponseDto::from)
+//                                .collect(Collectors.toList())
+//                                : Collections.emptyList()
+//                )
+//                .restaurantTags(topTags != null ? topTags : Collections.emptyList())
+//                .menus(restaurant.getMenus() != null
+//                        ? restaurant.getMenus().stream()
+//                        .map(menu -> new MenuResponseDto(menu.getName(), menu.getPrice()))
+//                        .collect(Collectors.toList())
+//                        : Collections.emptyList())
+//                .xCoordinate(restaurant.getXcoordinate())
+//                .yCoordinate(restaurant.getYcoordinate())
+//                .build();
+//    }
 
 }

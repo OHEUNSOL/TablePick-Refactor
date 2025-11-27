@@ -32,7 +32,7 @@ public class SecurityConfig {
                                 "/api/reservations/test/**", "/api/dev/**", "/api/notifications/schedule/**",
                                 "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/auth/**", "/oauth2/**", "/swagger-ui.html/**",
-                                "/api/restaurants/all", "/api/restaurants/{id}",
+                                "/api/restaurants/**", "/api/restaurants/{id}",
                                 "/api/boards/main", "/api/tags", "/api/restaurants/search",
                                 "/api/restaurants/list", "/api/reservation/available-times", "/api/board-tags/",
                                 "/api/boards/list", "/api/boards", "/api/boards/{boardId}",

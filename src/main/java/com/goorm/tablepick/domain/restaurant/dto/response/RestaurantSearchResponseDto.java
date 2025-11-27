@@ -6,10 +6,6 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class RestaurantSearchResponseDto {
 
     @Schema(description = "식당 아이디", example = "1")
@@ -24,11 +20,11 @@ public class RestaurantSearchResponseDto {
     @Schema(description = "식당 카테고리", example = "한식")
     private String restaurantCategory;
 
-    @Schema(description = "식당 이미지", example = "url")
-    private String restaurantImage;
-
-    @Schema(description = "식당 태그", example = "역이랑 가까워요")
-    private List<String> boardTags;
-
-    private String boardTagsJson;
+    @Builder
+    public RestaurantSearchResponseDto(Long id, String name, String address, String restaurantCategory) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.restaurantCategory = restaurantCategory;
+    }
 }

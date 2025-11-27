@@ -40,13 +40,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthInfo oAuthInfo = createOAuthInfo(registrationId, attributes);
         //사용자 정보를 멤버로 변환
         Member member = oAuthInfo.toEntity();
-        
+
         //멤버가 원래 가입이 되어있으면 로그인 없으면 회원가입
         Member savedMember = memberRepository.findByEmail(member.getEmail())
                 .orElseGet(() -> {
                     Member newMember = memberRepository.save(member);
                     log.info("New member registered: {}", newMember.getEmail());
-                    
+
                     return newMember;
                 });
 

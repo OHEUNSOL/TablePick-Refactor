@@ -1,30 +1,24 @@
-package com.goorm.tablepick.domain.restaurant.entity;
+package com.goorm.tablepick.domain.tag.entity;
 
+import com.goorm.tablepick.domain.restaurant.entity.Restaurant;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Entity
-@Table(
-        name = "menu",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"restaurant_id", "name"})
-)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class Menu {
+public class RestaurantTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    @Column(nullable = false)
-    private int price;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tag_id", nullable = false)
+    private Tag tag;
 }

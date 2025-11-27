@@ -1,0 +1,32 @@
+### ✅ 1. 카테고리만 필터링
+GET http://localhost:8080/api/restaurants/complex-search?categoryId=1
+Accept: application/json
+
+
+### ✅ 2. 카테고리 + 최소 가격 필터링
+GET http://localhost:8080/api/restaurants/complex-search?categoryId=1&minPrice=10000
+Accept: application/json
+
+
+### ✅ 3. 카테고리 + 가격 범위 필터링
+GET http://localhost:8080/api/restaurants/complex-search?categoryId=1&minPrice=10000&maxPrice=30000
+Accept: application/json
+
+### ✅ 4. 카테고리 + 태그 필터링
+# tagIds는 다중 값 전달 시 이렇게 콤마(,)로 구분
+GET http://localhost:8080/api/restaurants/complex-search?categoryId=1&tagIds=2,3
+Accept: application/json
+
+### ✅ 5. 태그만 필터링
+GET http://localhost:8080/api/restaurants/complex-search?tagIds=1,2
+Accept: application/json
+
+
+### ✅ 6. 전체 조건 (카테고리 + 태그 + 가격 범위)
+GET http://localhost:8080/api/restaurants/complex-search?categoryId=1&tagIds=2,3&minPrice=10000&maxPrice=30000
+Accept: application/json
+
+
+### ✅ 7. 아무 조건 없이 전체 검색
+GET http://localhost:8080/api/restaurants/complex-search
+Accept: application/json

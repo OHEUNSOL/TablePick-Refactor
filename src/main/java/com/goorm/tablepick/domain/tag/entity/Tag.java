@@ -3,6 +3,9 @@ package com.goorm.tablepick.domain.tag.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,5 +18,9 @@ public class Tag {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<RestaurantTag> restaurantTags = new ArrayList<>();
 
 }
