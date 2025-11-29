@@ -1,4 +1,4 @@
-package com.goorm.tablepick.domain.reservation.service.ImprovedReservationService;
+package com.goorm.tablepick.domain.reservation.service.ReservationService;
 
 import com.goorm.tablepick.domain.member.entity.Member;
 import com.goorm.tablepick.domain.member.exception.MemberErrorCode;
@@ -16,7 +16,6 @@ import com.goorm.tablepick.domain.reservation.exception.ReservationErrorCode;
 import com.goorm.tablepick.domain.reservation.exception.ReservationException;
 import com.goorm.tablepick.domain.reservation.repository.ReservationRepository;
 import com.goorm.tablepick.domain.reservation.repository.ReservationSlotRepository;
-import com.goorm.tablepick.domain.reservation.service.ReservationExternalUpdateService;
 import com.goorm.tablepick.domain.restaurant.entity.Restaurant;
 import com.goorm.tablepick.domain.restaurant.exception.RestaurantErrorCode;
 import com.goorm.tablepick.domain.restaurant.exception.RestaurantException;
@@ -38,8 +37,6 @@ public class ReservationServiceV2 {
     private final ReservationSlotRepository reservationSlotRepository;
     private final RestaurantRepository restaurantRepository;
     private final ReservationExternalUpdateService reservationExternalUpdateService;
-    private final RestPaymentApi paymentApi;
-    private final PgClient pgClient;
 
 
     @Transactional
@@ -138,22 +135,6 @@ public class ReservationServiceV2 {
                 .build();
 
         Reservation savedReservation = reservationRepository.save(reservation);
-
-        // 2. 외부 결제 API 호출
-        PaymentResponseDto paymentResponse = pgClient.callPgApi( // PgClient를 통해 Fake PG 서버 호출
-                PaymentRequestDto.builder()
-                        .reservationId(reservation.getId())
-                        .memberId(member.getId())
-                        .amount(request.getPartySize() * 5000L)
-                        .build()
-        );
-        if (!paymentResponse.isSuccess()) {
-            log.error("외부 결제 API 호출 실패. 예약 ID: {}, 오류: {}", reservation.getId(), paymentResponse.getErrorMessage());
-        }
-
-        // 3. 외부 API 응답으로 참가자 정보 업데이트
-        reservationExternalUpdateService.updateReservationPayment(reservation.getId(), paymentResponse.getPaymentId());
-
 
     }
 }

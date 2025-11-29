@@ -1,8 +1,7 @@
-package com.goorm.tablepick.domain.reservation.service.ImprovedReservationService;
+package com.goorm.tablepick.domain.reservation.service.ReservationService;
 
 import com.goorm.tablepick.domain.member.entity.Member;
 import com.goorm.tablepick.domain.member.repository.MemberRepository;
-import com.goorm.tablepick.domain.payment.RestPaymentApi;
 import com.goorm.tablepick.domain.reservation.dto.request.ReservationRequestDto;
 import com.goorm.tablepick.domain.reservation.entity.Reservation;
 import com.goorm.tablepick.domain.reservation.entity.ReservationSlot;
@@ -11,7 +10,6 @@ import com.goorm.tablepick.domain.reservation.exception.ReservationErrorCode;
 import com.goorm.tablepick.domain.reservation.exception.ReservationException;
 import com.goorm.tablepick.domain.reservation.repository.ReservationRepository;
 import com.goorm.tablepick.domain.reservation.repository.ReservationSlotRepository;
-import com.goorm.tablepick.domain.reservation.service.ReservationExternalUpdateService;
 import com.goorm.tablepick.domain.restaurant.entity.Restaurant;
 import com.goorm.tablepick.domain.restaurant.exception.RestaurantErrorCode;
 import com.goorm.tablepick.domain.restaurant.exception.RestaurantException;
@@ -27,12 +25,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ReservationServiceV0 {
+public class ReservationServiceV1 {
     private final ReservationRepository reservationRepository;
     private final MemberRepository memberRepository;
     private final ReservationSlotRepository reservationSlotRepository;
     private final RestaurantRepository restaurantRepository;
-    private final RestPaymentApi paymentApi;
     private final ReservationExternalUpdateService reservationExternalUpdateService;
 
 
@@ -68,7 +65,7 @@ public class ReservationServiceV0 {
 
         // 슬롯 카운트 증가
         reservationSlot.setCount(count + 1);
-        reservationSlotRepository.save(reservationSlot);
+        reservationSlotRepository.saveAndFlush(reservationSlot);
 
         // 예약 생성 (PENDING)
         String paymentId = UUID.randomUUID().toString();

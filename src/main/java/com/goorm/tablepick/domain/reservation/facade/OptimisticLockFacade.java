@@ -3,7 +3,7 @@ package com.goorm.tablepick.domain.reservation.facade;
 import com.goorm.tablepick.domain.reservation.dto.request.ReservationRequestDto;
 import com.goorm.tablepick.domain.reservation.exception.ReservationErrorCode;
 import com.goorm.tablepick.domain.reservation.exception.ReservationException;
-import com.goorm.tablepick.domain.reservation.service.ImprovedReservationService.ReservationServiceV2;
+import com.goorm.tablepick.domain.reservation.service.ReservationService.ReservationServiceV2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

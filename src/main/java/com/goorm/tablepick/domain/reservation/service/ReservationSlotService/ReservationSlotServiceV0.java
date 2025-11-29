@@ -1,7 +1,8 @@
-package com.goorm.tablepick.domain.reservation.service;
+package com.goorm.tablepick.domain.reservation.service.ReservationSlotService;
 
 import com.goorm.tablepick.domain.reservation.entity.ReservationSlot;
 import com.goorm.tablepick.domain.reservation.repository.ReservationSlotRepository;
+import com.goorm.tablepick.domain.reservation.service.ReservationSlotGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class ReservationSlotService {
+public class ReservationSlotServiceV0 {
 
     private final ReservationSlotGenerator slotGenerator;
     private final ReservationSlotRepository slotRepository;

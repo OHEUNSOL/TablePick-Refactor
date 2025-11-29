@@ -5,10 +5,8 @@ import com.goorm.tablepick.domain.reservation.dto.response.CreateReservationResp
 import com.goorm.tablepick.domain.reservation.entity.ReservationSlot;
 import com.goorm.tablepick.domain.reservation.facade.OptimisticLockFacade;
 import com.goorm.tablepick.domain.reservation.facade.V0.CreateReservationFacadeV0;
-import com.goorm.tablepick.domain.reservation.service.ImprovedReservationService.ReservationServiceV2;
-import com.goorm.tablepick.domain.reservation.service.ImprovedReservationSlotService.ReservationSlotServiceV2;
-import com.goorm.tablepick.domain.reservation.service.ReservationService;
-import com.goorm.tablepick.domain.reservation.service.ReservationSlotGenerator;
+import com.goorm.tablepick.domain.reservation.service.ReservationService.ReservationServiceV2;
+import com.goorm.tablepick.domain.reservation.service.ReservationSlotService.ReservationSlotServiceV0.ReservationSlotServiceV2;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
