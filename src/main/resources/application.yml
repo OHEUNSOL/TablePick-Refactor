@@ -22,12 +22,31 @@ spring:
 
   kafka:
     # Kafka 서버 주소
-    bootstrap-servers: localhost:9092
+    bootstrap-servers:
+      - localhost:9092
+      - localhost:19092
+      - localhost:29092
+
     producer:
       # 메시지의 key 직렬화 방식 : 자바 객체를 문자열(String)로 변환해서 Kafka에 전송
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       # 메시지의 value 직렬화 방식 : 자바 객체를 문자열(String)로 변환해서 Kafka에 전송
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 여러 파티션에 메시지를 저장할 때의 방식 (라운드 로빈 방식)
+      properties:
+        partitioner.class: org.apache.kafka.clients.producer.RoundRobinPartitioner
+
+  mail:
+    host: localhost
+    port: 1025        # MailHog 기본 SMTP 포트
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
 
 jwt:
   secret: ${JWT_SECRET:VmVyeVNlY3JldEtleUZvclRlc3RpbmdQdXJwb3NlczEyMzQ1Njcetvsdfweethdxdf=}

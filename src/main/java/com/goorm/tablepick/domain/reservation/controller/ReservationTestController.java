@@ -1,8 +1,6 @@
 package com.goorm.tablepick.domain.reservation.controller;
 
 import com.goorm.tablepick.domain.reservation.dto.request.ReservationRequestDto;
-import com.goorm.tablepick.domain.reservation.facade.V0.CreateReservationTestFacadeV0;
-import com.goorm.tablepick.domain.reservation.facade.V0.OptimisticLockFacadeV0;
 import com.goorm.tablepick.domain.reservation.facade.V1.OptimisticLockFacadeV1;
 import com.goorm.tablepick.domain.reservation.facade.V2.OptimisticLockFacadeV2;
 import io.swagger.v3.oas.annotations.Operation;

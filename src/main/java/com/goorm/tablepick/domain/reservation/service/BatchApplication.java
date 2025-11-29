@@ -4,7 +4,7 @@ import com.goorm.tablepick.domain.reservation.entity.ReservationSlot;
 import com.goorm.tablepick.domain.reservation.monitoring.BatchContext;
 import com.goorm.tablepick.domain.reservation.monitoring.BatchContextHolder;
 import com.goorm.tablepick.domain.reservation.monitoring.BatchName;
-import com.goorm.tablepick.domain.reservation.service.ImprovedReservationSlotService.ReservationSlotServiceV2;
+import com.goorm.tablepick.domain.reservation.service.ReservationSlotService.ReservationSlotServiceV2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

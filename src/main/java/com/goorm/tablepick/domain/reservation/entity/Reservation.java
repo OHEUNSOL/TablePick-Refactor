@@ -35,10 +35,6 @@ public class Reservation {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    private String paymentId; // 결제 ID, 8082 포트에서 관리되는 Payment와 연결
-    private String paymentStatus; // PENDING, COMPLETED, FAILED, CANCELLED
-    private Long amount;
-
     @Column
     @CreatedDate
     private LocalDateTime createdAt;
@@ -57,8 +53,6 @@ public class Reservation {
         this.member = member;
         this.reservationSlot = reservationSlot;
         this.restaurant = restaurant;
-        this.paymentId = paymentId;
-        this.paymentStatus = paymentStatus;
         this.createdAt = createdAt;
     }
 
@@ -80,24 +74,5 @@ public class Reservation {
         return this.restaurant != null ? this.restaurant.getName() : null;
     }
 
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public void setPaymentId(String paymentId) {
-        this.paymentId = paymentId;
-    }
-
-    public void completePayment(String paymentId, Long amount) {
-        this.paymentId = paymentId;
-        this.amount = amount;
-        this.paymentStatus = "CONFIRMED";
-        this.reservationStatus = ReservationStatus.CONFIRMED;
-    }
-
-    public void failPayment() {
-        this.paymentStatus = "FAILED";
-        this.reservationStatus = ReservationStatus.CANCELLED;
-    }
 
 }
