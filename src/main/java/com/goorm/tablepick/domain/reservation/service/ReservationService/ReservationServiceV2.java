@@ -12,6 +12,7 @@ import com.goorm.tablepick.domain.reservation.exception.ReservationErrorCode;
 import com.goorm.tablepick.domain.reservation.exception.ReservationException;
 import com.goorm.tablepick.domain.reservation.repository.ReservationRepository;
 import com.goorm.tablepick.domain.reservation.repository.ReservationSlotRepository;
+import com.goorm.tablepick.domain.reservation.service.ReservationNotificationService;
 import com.goorm.tablepick.domain.restaurant.entity.Restaurant;
 import com.goorm.tablepick.domain.restaurant.exception.RestaurantErrorCode;
 import com.goorm.tablepick.domain.restaurant.exception.RestaurantException;
@@ -22,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class ReservationServiceV2 {
     private final MemberRepository memberRepository;
     private final ReservationSlotRepository reservationSlotRepository;
     private final RestaurantRepository restaurantRepository;
-
+    private final ReservationNotificationService reservationNotificationService;
 
     @Transactional
     public void createReservationPessimistic(String username, ReservationRequestDto request) {
@@ -79,16 +79,19 @@ public class ReservationServiceV2 {
 
         reservationRepository.save(reservation);
 
+        // 예약 성공 후 메일 발송
+        reservationNotificationService.sendReservationCreatedNotification(reservation);
+
     }
 
     @Transactional
-    public void createReservationOptimistic(Long memberId, ReservationRequestDto request) {
+    public void createReservationOptimistic(String username, ReservationRequestDto request) {
         // 식당 검증
         Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
                 .orElseThrow(() -> new RestaurantException(RestaurantErrorCode.NOT_FOUND));
 
-        // 0. 멤버 검증
-        Member member = memberRepository.findById(memberId)
+        // 멤버 검증
+        Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
 
         // 예약 슬롯을 버저닝과 함께 낙관적락으로 가져옴
@@ -125,6 +128,9 @@ public class ReservationServiceV2 {
                 .build();
 
         reservationRepository.save(reservation);
+
+        // 예약 성공 후 메일 발송
+        reservationNotificationService.sendReservationCreatedNotification(reservation);
 
     }
 }

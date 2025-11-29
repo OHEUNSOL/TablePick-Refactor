@@ -12,6 +12,7 @@ import com.goorm.tablepick.domain.reservation.exception.ReservationErrorCode;
 import com.goorm.tablepick.domain.reservation.exception.ReservationException;
 import com.goorm.tablepick.domain.reservation.repository.ReservationRepository;
 import com.goorm.tablepick.domain.reservation.repository.ReservationSlotRepository;
+import com.goorm.tablepick.domain.reservation.service.ReservationNotificationService;
 import com.goorm.tablepick.domain.restaurant.entity.Restaurant;
 import com.goorm.tablepick.domain.restaurant.exception.RestaurantErrorCode;
 import com.goorm.tablepick.domain.restaurant.exception.RestaurantException;
@@ -30,7 +31,7 @@ public class ReservationServiceV1 {
     private final MemberRepository memberRepository;
     private final ReservationSlotRepository reservationSlotRepository;
     private final RestaurantRepository restaurantRepository;
-
+    private final ReservationNotificationService reservationNotificationService;
 
     @Transactional
     public void createReservation(String username, ReservationRequestDto request) {
@@ -77,5 +78,8 @@ public class ReservationServiceV1 {
                 .build();
 
         reservationRepository.save(reservation);
+
+        // 예약 성공 후 메일 발송
+        reservationNotificationService.sendReservationCreatedNotification(reservation);
     }
 }

@@ -1,10 +1,8 @@
 package com.goorm.tablepick.domain.reservation.controller;
 
 import com.goorm.tablepick.domain.reservation.dto.request.ReservationRequestDto;
-import com.goorm.tablepick.domain.reservation.dto.response.CreateReservationResponseDto;
 import com.goorm.tablepick.domain.reservation.entity.ReservationSlot;
-import com.goorm.tablepick.domain.reservation.facade.OptimisticLockFacade;
-import com.goorm.tablepick.domain.reservation.facade.V0.CreateReservationFacadeV0;
+import com.goorm.tablepick.domain.reservation.facade.OptimisticLockReservationFacadeV0;
 import com.goorm.tablepick.domain.reservation.service.ReservationService.ReservationServiceV2;
 import com.goorm.tablepick.domain.reservation.service.ReservationSlotService.ReservationSlotServiceV0.ReservationSlotServiceV2;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationController {
     private final ReservationService reservationService;
-    private final OptimisticLockFacade optimisticLockFacade;
+    private final OptimisticLockReservationFacadeV0 optimisticLockFacade;
     private final ReservationServiceV2 reservationServiceV2;
     private final ReservationSlotGenerator reservationSlotGenerator;
     private final ReservationSlotServiceV2 reservationSlotServiceV2;

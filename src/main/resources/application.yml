@@ -29,6 +29,18 @@ spring:
       # 메시지의 value 직렬화 방식 : 자바 객체를 문자열(String)로 변환해서 Kafka에 전송
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
+  mail:
+    host: localhost
+    port: 1025        # MailHog 기본 SMTP 포트
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
 jwt:
   secret: ${JWT_SECRET:VmVyeVNlY3JldEtleUZvclRlc3RpbmdQdXJwb3NlczEyMzQ1Njcetvsdfweethdxdf=}
   token-validity-in-seconds: 86400  # 24시간
