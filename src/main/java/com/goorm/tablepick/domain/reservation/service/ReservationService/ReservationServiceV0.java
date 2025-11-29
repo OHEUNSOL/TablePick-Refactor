@@ -1,6 +1,8 @@
 package com.goorm.tablepick.domain.reservation.service.ReservationService;
 
 import com.goorm.tablepick.domain.member.entity.Member;
+import com.goorm.tablepick.domain.member.exception.MemberErrorCode;
+import com.goorm.tablepick.domain.member.exception.MemberException;
 import com.goorm.tablepick.domain.member.repository.MemberRepository;
 import com.goorm.tablepick.domain.reservation.dto.request.ReservationRequestDto;
 import com.goorm.tablepick.domain.reservation.entity.Reservation;
@@ -31,17 +33,15 @@ public class ReservationServiceV0 {
     private final ReservationSlotRepository reservationSlotRepository;
     private final RestaurantRepository restaurantRepository;
 
-
-
     @Transactional
-    public String createReservation(String username, ReservationRequestDto request) {
+    public void createReservation(String username, ReservationRequestDto request) {
         // 식당 검증
         Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
                 .orElseThrow(() -> new RestaurantException(RestaurantErrorCode.NOT_FOUND));
 
         // 멤버 검증
         Member member = memberRepository.findByEmail(username)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
 
         // 예약 가능 시간 확인
         ReservationSlot reservationSlot = reservationSlotRepository.findByRestaurantIdAndDateAndTime(
@@ -67,21 +67,16 @@ public class ReservationServiceV0 {
         reservationSlot.setCount(count + 1);
         reservationSlotRepository.save(reservationSlot);
 
-        // 예약 생성 (PENDING)
-        String paymentId = UUID.randomUUID().toString();
+        // 예약 생성
         Reservation reservation = Reservation.builder()
                 .member(member)
                 .reservationSlot(reservationSlot)
                 .partySize(request.getPartySize())
                 .reservationStatus(ReservationStatus.CONFIRMED)
                 .restaurant(restaurant)
-                .paymentId(paymentId)
-                .paymentStatus("PENDING")
                 .createdAt(LocalDateTime.now())
                 .build();
 
         reservationRepository.save(reservation);
-
-        return paymentId;
     }
 }

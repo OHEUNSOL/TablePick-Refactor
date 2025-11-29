@@ -35,15 +35,6 @@ public class ReservationController {
     private final ReservationSlotServiceV2 reservationSlotServiceV2;
     private final CreateReservationFacadeV0 createReservationFacadeV0;
 
-    @PostMapping
-    @Operation(summary = "예약 생성", description = "식당, 유저, 예약 시간 정보를 기반으로 예약을 생성합니다.")
-    public ResponseEntity<CreateReservationResponseDto> createReservation(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody @Valid ReservationRequestDto request) {
-        CreateReservationResponseDto dto = reservationService.createReservation(userDetails.getUsername(), request);
-        return ResponseEntity.ok(dto);
-    }
-
     @PostMapping("/pessimistic")
     @Operation(summary = "예약 생성", description = "식당, 유저, 예약 시간 정보를 기반으로 예약을 생성합니다.")
     public ResponseEntity<Void> createReservationPessimistic(@AuthenticationPrincipal UserDetails userDetails,
