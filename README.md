@@ -11,10 +11,8 @@
 ---
 
 ## 🔗 관련 레포지토리
-- [TablePick-Payment-Server](https://github.com/OHEUNSOL/TablePick-Payment)  
-  → 예약 서비스와 분리된 **결제 서버**, Kafka 이벤트 및 외부 결제 API 처리 담당
-- [TablePick-External-Payment-API](https://github.com/OHEUNSOL/TablePick-Fake-Pg)  
-  → **외부 결제 API 서버** 시뮬레이션, 테스트 및 장애 대응 로직 검증용
+- [TablePick-Notification-Server](https://github.com/OHEUNSOL/TablePick-Notification)  
+  → 예약 서비스와 분리된 **알림 서버**, Kafka 컨슈머 서버(메일 처리 담당)
 
 ---  
 
