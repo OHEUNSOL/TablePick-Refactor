@@ -73,7 +73,7 @@ public class ReservationServiceV2 {
         reservationRepository.save(reservation);
 
         // 예약 성공 후 메일 발송
-        reservationNotificationService.sendReservationCreatedNotification(reservation);
+        reservationNotificationService.sendReservationCreatedNotification(reservation.getId());
 
     }
 
@@ -116,7 +116,7 @@ public class ReservationServiceV2 {
         reservationRepository.save(reservation);
 
         // 예약 성공 후 메일 발송
-        reservationNotificationService.sendReservationCreatedNotification(reservation);
+        reservationNotificationService.sendReservationCreatedNotification(reservation.getId());
 
     }
 }
