@@ -49,13 +49,6 @@ public class ReservationServiceV2 {
                         request.getRestaurantId(), request.getReservationDate(), request.getReservationTime())
                 .orElseThrow(() -> new ReservationException(ReservationErrorCode.NO_RESERVATION_SLOT));
 
-        // 중복 예약 확인
-        boolean hasDuplicate = reservationRepository.findByReservationSlot(reservationSlot).stream()
-                .anyMatch(r -> r.getMember().equals(member) && r.getReservationStatus() == ReservationStatus.CONFIRMED);
-        if (hasDuplicate) {
-            throw new ReservationException(ReservationErrorCode.DUPLICATE_RESERVATION);
-        }
-
         // 슬롯 카운트 검증
         Long count = reservationSlot.getCount();
         Long maxCapacity = restaurant.getMaxCapacity();
@@ -98,13 +91,6 @@ public class ReservationServiceV2 {
         ReservationSlot reservationSlot = reservationSlotRepository.findWithOptimisticLock(
                         request.getRestaurantId(), request.getReservationDate(), request.getReservationTime())
                 .orElseThrow(() -> new ReservationException(ReservationErrorCode.NO_RESERVATION_SLOT));
-
-        // 중복 예약 확인
-        boolean hasDuplicate = reservationRepository.findByReservationSlot(reservationSlot).stream()
-                .anyMatch(r -> r.getMember().equals(member) && r.getReservationStatus() != ReservationStatus.CANCELLED);
-        if (hasDuplicate) {
-            throw new ReservationException(ReservationErrorCode.DUPLICATE_RESERVATION);
-        }
 
         // 슬롯 카운트 검증
         Long count = reservationSlot.getCount();
