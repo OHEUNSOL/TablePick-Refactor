@@ -7,6 +7,7 @@ import com.goorm.tablepick.domain.reservation.entity.Reservation;
 import com.goorm.tablepick.domain.reservation.event.ReservationConfirmedEvent;
 import com.goorm.tablepick.domain.reservation.service.ReservationNotificationService;
 import com.goorm.tablepick.domain.reservation.service.ReservationService.ReservationServiceV3;
+import com.goorm.tablepick.global.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class OptimisticLockReservationFacadeV3 {
     private final ReservationServiceV3 reservationServiceV3;
-    private final ReservationNotificationService reservationNotificationService;
+    private final JsonUtils  jsonUtils;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     private static final long RETRY_DELAY_MS = 30;
@@ -42,7 +43,7 @@ public class OptimisticLockReservationFacadeV3 {
                         .partySize(reservation.getPartySize())
                         .build();
 
-                kafkaTemplate.send("reservation.confirmed", toJsonString(reservationConfirmedEvent));
+                kafkaTemplate.send("reservation.confirmed", jsonUtils.toJsonString(reservationConfirmedEvent));
 
                 return; // 성공 시 메서드 종료
 
@@ -55,13 +56,4 @@ public class OptimisticLockReservationFacadeV3 {
         }
     }
 
-    private String toJsonString(Object object) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String message = objectMapper.writeValueAsString(object);
-            return message;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Json 직렬화 실패");
-        }
-    }
 }

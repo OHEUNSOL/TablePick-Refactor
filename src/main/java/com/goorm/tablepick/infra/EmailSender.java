@@ -4,5 +4,5 @@ import com.goorm.tablepick.domain.reservation.entity.Reservation;
 
 public interface EmailSender {
 
-    void sendReservationEmail(Reservation reservation);
+    void sendReservationEmail(Long reservationId);
 }

@@ -14,22 +14,22 @@ public class ReservationNotificationService {
 
     private final EmailSender emailSender;
 
-    public void sendReservationCreatedNotification(Reservation reservation) {
-        doSendMail(reservation);
+    public void sendReservationCreatedNotification(Long reservationId) {
+        doSendMail(reservationId);
     }
 
     //비동기로 메일 전송
     @Async("mailTaskExecutor")
-    public void sendReservationCreatedNotificationAsync(Reservation reservation) {
-        doSendMail(reservation);
+    public void sendReservationCreatedNotificationAsync(Long reservationId) {
+        doSendMail(reservationId);
     }
 
-    private void doSendMail(Reservation reservation) {
+    private void doSendMail(Long reservationId) {
         try {
-            emailSender.sendReservationEmail(reservation);
-            log.info("예약 완료 메일 발송. reservationId={}", reservation.getId());
+            emailSender.sendReservationEmail(reservationId);
+            log.info("예약 완료 메일 발송. reservationId={}", reservationId);
         } catch (Exception e) {
-            log.error("예약 완료 메일 발송 중 예외 발생. reservationId={}", reservation.getId(), e);
+            log.error("예약 완료 메일 발송 중 예외 발생. reservationId={}", reservationId, e);
         }
     }
 }

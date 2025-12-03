@@ -31,7 +31,7 @@ public class OptimisticLockReservationFacadeV1 {
                         userName, retryCount + 1);
                 // 2. 트랜잭션 밖에서 알림 실행
                 reservationNotificationService
-                        .sendReservationCreatedNotification(reservation);
+                        .sendReservationCreatedNotification(reservation.getId());
 
                 return; // 성공 시 메서드 종료
 
