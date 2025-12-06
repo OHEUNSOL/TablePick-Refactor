@@ -59,6 +59,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'      // 기존 MVC
     implementation 'org.springframework.boot:spring-boot-starter-webflux'  // WebClient 제공
 
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // kafka
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.apache.kafka:kafka-streams:3.6.1'

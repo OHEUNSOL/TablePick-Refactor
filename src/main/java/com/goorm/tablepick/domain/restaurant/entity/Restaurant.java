@@ -30,7 +30,7 @@ public class Restaurant {
     
     private Double ycoordinate;
     
-    private Long maxCapacity;
+    private int maxCapacity;
 
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
