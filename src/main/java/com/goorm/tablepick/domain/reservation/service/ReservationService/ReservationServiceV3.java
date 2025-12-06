@@ -51,7 +51,7 @@ public class ReservationServiceV3 {
 
         // 슬롯 카운트 검증
         Long count = reservationSlot.getCount();
-        Long maxCapacity = restaurant.getMaxCapacity();
+        int maxCapacity = restaurant.getMaxCapacity();
         if (count >= maxCapacity) {
             throw new ReservationException(ReservationErrorCode.EXCEED_RESERVATION_LIMIT);
         }
@@ -93,7 +93,7 @@ public class ReservationServiceV3 {
 
         // 슬롯 카운트 검증
         Long count = reservationSlot.getCount();
-        Long maxCapacity = restaurant.getMaxCapacity();
+        int maxCapacity = restaurant.getMaxCapacity();
         if (count >= maxCapacity) {
             throw new ReservationException(ReservationErrorCode.EXCEED_RESERVATION_LIMIT);
         }
