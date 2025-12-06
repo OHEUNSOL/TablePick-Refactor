@@ -18,7 +18,8 @@ public enum ReservationErrorCode implements ErrorCode {
     DUPLICATE_RESERVATION("중복된 예약입니다."),
     INTERNAL_SERVER_ERROR("내부 서버 오류로 인해 예약 실패."),
     PAYMENT_FAILED("결제가 실패 되었습니다"),
-    OPTIMISTIC_LOCK_RETRY_EXCEEDED("최대 재시도 횟수를 초과했습니다.");
+    OPTIMISTIC_LOCK_RETRY_EXCEEDED("최대 재시도 횟수를 초과했습니다."),
+    NO_AUTHORITY("예약 정보와 다릅니다.");
 
     private final String message;
 }
