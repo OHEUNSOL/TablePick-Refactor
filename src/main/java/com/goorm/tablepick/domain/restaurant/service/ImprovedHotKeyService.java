@@ -24,8 +24,8 @@ public class ImprovedHotKeyService {
     private static final String CACHE_KEY_PREFIX = "restaurant";
     private static final String SERVICE_NAME = "ImprovedHotKeyService";
     private static final String NULL_VALUE = "__NULL__"; // null을 대체할 객체
-    // 기본 TTL 60초 + Jitter(0~30초 랜덤)
-    private static final long TTL_BASE = 60L;
+    // 기본 TTL 5분 + Jitter(0~30초 랜덤)
+    private static final long TTL_BASE = 300L;
     private static final long JITTER_RANGE = 30L;
     private static final long LOCK_TIMEOUT_MS = 400;
 
