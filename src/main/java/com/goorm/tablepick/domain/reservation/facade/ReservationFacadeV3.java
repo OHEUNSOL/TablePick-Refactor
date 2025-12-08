@@ -4,7 +4,6 @@ import com.goorm.tablepick.domain.reservation.dto.request.ReservationRequestDto;
 import com.goorm.tablepick.domain.reservation.entity.Reservation;
 import com.goorm.tablepick.domain.reservation.event.ReservationConfirmedEvent;
 import com.goorm.tablepick.domain.reservation.service.ReservationService.ReservationServiceV3;
-import com.goorm.tablepick.domain.reservation.service.ReservationService.ReservationServiceV4;
 import com.goorm.tablepick.global.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OptimisticLockReservationFacadeV4 {
-    private final ReservationServiceV4 reservationServiceV4;
+public class ReservationFacadeV3 {
+    private final ReservationServiceV3 reservationServiceV3;
     private final JsonUtils  jsonUtils;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
@@ -29,7 +28,7 @@ public class OptimisticLockReservationFacadeV4 {
         while (retryCount < MAX_RETRY_COUNT) {
             try {
                 // 1. 트랜잭션 안에서 예약 + 결제 처리
-                Reservation reservation = reservationServiceV4.createReservationOptimistic(memberName, request);
+                Reservation reservation = reservationServiceV3.createReservationOptimistic(memberName, request);
                 log.info("예약 생성 성공 - username: {}, 총 시도횟수: {}",
                         memberName, retryCount + 1);
 

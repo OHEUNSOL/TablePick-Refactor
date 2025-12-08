@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OptimisticLockReservationFacadeV2 {
+public class ReservationFacadeV1 {
     private final ReservationServiceV3 reservationServiceV3;
     private final ReservationNotificationService reservationNotificationService;
 
@@ -28,9 +28,9 @@ public class OptimisticLockReservationFacadeV2 {
                 Reservation reservation = reservationServiceV3.createReservationOptimistic(userName, request);
                 log.info("예약 생성 성공 - username: {}, 총 시도횟수: {}",
                         userName, retryCount + 1);
-                // 2. 트랜잭션 밖에서 알림 실행 (비동기)
+                // 2. 트랜잭션 밖에서 알림 실행
                 reservationNotificationService
-                        .sendReservationCreatedNotificationAsync(reservation.getId());
+                        .sendReservationCreatedNotification(reservation.getId());
 
                 return; // 성공 시 메서드 종료
 
