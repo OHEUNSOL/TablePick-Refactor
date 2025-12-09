@@ -68,7 +68,7 @@ public class ImprovedCacheAvalancheService {
             // jitter 적용된 TTL로 저장
             // ms 단위로 저장
             long ttl = TTL_BASE + ThreadLocalRandom.current().nextLong(JITTER_RANGE);
-            redisTemplate.opsForValue().set(key, NULL_VALUE, ttl, TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue().set(key, NULL_VALUE, ttl, TimeUnit.SECONDS);
             return null;
         }
 
@@ -77,7 +77,7 @@ public class ImprovedCacheAvalancheService {
         // jitter 적용된 TTL로 저장
         // ms 단위로 저장
         long ttl = TTL_BASE + ThreadLocalRandom.current().nextLong(JITTER_RANGE);
-        redisTemplate.opsForValue().set(key, serialized, ttl, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(key, serialized, ttl, TimeUnit.SECONDS);
         return dto;
 
     }

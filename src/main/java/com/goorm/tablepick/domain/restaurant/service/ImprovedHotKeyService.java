@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -128,7 +126,7 @@ public class ImprovedHotKeyService {
      */
     private void setCacheWithJitter(String key, String value) {
         long ttl = TTL_BASE + ThreadLocalRandom.current().nextLong(JITTER_RANGE);
-        redisTemplate.opsForValue().set(key, value, ttl, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(key, value, ttl, TimeUnit.SECONDS);
     }
 
     /**

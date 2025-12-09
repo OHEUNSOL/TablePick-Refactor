@@ -7,6 +7,8 @@ import com.goorm.tablepick.domain.member.entity.Member;
 import com.goorm.tablepick.domain.restaurant.dto.request.RestaurantSearchRequestDto;
 import com.goorm.tablepick.domain.restaurant.dto.response.*;
 import com.goorm.tablepick.domain.restaurant.entity.Restaurant;
+import com.goorm.tablepick.domain.restaurant.exception.RestaurantErrorCode;
+import com.goorm.tablepick.domain.restaurant.exception.RestaurantException;
 import com.goorm.tablepick.domain.restaurant.repository.RestaurantCategoryRepository;
 import com.goorm.tablepick.domain.restaurant.repository.RestaurantRepository;
 
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,16 @@ public class RestaurantService {
 
     @Autowired
     ObjectMapper mapper;
+
+    public RestaurantSummaryDto getRestaurantById(Long id){
+        // 식당 검증
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new RestaurantException(RestaurantErrorCode.NOT_FOUND));
+
+        RestaurantSummaryDto restaurantSummaryDto = RestaurantSummaryDto.from(restaurant);
+        return restaurantSummaryDto;
+
+    }
 
     public Page<RestaurantResponseDto> getAllRestaurants(Pageable pageable, Member member) {
         Page<Restaurant> restaurantPage;
