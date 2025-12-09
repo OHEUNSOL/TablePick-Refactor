@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OptimisticLockReservationFacadeV0 {
+public class ReservationFacadeV0 {
     private final ReservationServiceV2 reservationServiceV2;
 
     private static final long RETRY_DELAY_MS = 30;

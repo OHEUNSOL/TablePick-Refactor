@@ -77,7 +77,7 @@ public class ReservationSlotGenerator {
                     .address("Seoul")
                     .xcoordinate(127.0 + (i * 0.01))
                     .ycoordinate(37.5 + (i * 0.01))
-                    .maxCapacity(100L)
+                    .maxCapacity(100)
                     .build();
             restaurants.add(restaurantRepository.save(restaurant));
         }

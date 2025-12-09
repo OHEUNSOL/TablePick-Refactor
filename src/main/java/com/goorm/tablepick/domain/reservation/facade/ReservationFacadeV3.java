@@ -1,11 +1,8 @@
 package com.goorm.tablepick.domain.reservation.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goorm.tablepick.domain.reservation.dto.request.ReservationRequestDto;
 import com.goorm.tablepick.domain.reservation.entity.Reservation;
 import com.goorm.tablepick.domain.reservation.event.ReservationConfirmedEvent;
-import com.goorm.tablepick.domain.reservation.service.ReservationNotificationService;
 import com.goorm.tablepick.domain.reservation.service.ReservationService.ReservationServiceV3;
 import com.goorm.tablepick.global.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OptimisticLockReservationFacadeV3 {
+public class ReservationFacadeV3 {
     private final ReservationServiceV3 reservationServiceV3;
     private final JsonUtils  jsonUtils;
     private final KafkaTemplate<String, String> kafkaTemplate;

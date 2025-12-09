@@ -27,8 +27,8 @@ public class ImprovedCacheAvalancheService {
     private static final String CACHE_KEY_PREFIX = "restaurant";
     private static final String SERVICE_NAME = "ImprovedCacheAvalancheService";
     private static final String NULL_VALUE = "__NULL__"; // null을 대체할 객체
-    // 기본 TTL 60초 + Jitter(0~30초 랜덤)
-    private static final long TTL_BASE = 60L;
+    // 기본 TTL 5분 + Jitter(0~30초 랜덤)
+    private static final long TTL_BASE = 300L;
     private static final long JITTER_RANGE = 30L;
 
     private final StringRedisTemplate redisTemplate;
@@ -68,7 +68,7 @@ public class ImprovedCacheAvalancheService {
             // jitter 적용된 TTL로 저장
             // ms 단위로 저장
             long ttl = TTL_BASE + ThreadLocalRandom.current().nextLong(JITTER_RANGE);
-            redisTemplate.opsForValue().set(key, NULL_VALUE, ttl, TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue().set(key, NULL_VALUE, ttl, TimeUnit.SECONDS);
             return null;
         }
 
@@ -77,7 +77,7 @@ public class ImprovedCacheAvalancheService {
         // jitter 적용된 TTL로 저장
         // ms 단위로 저장
         long ttl = TTL_BASE + ThreadLocalRandom.current().nextLong(JITTER_RANGE);
-        redisTemplate.opsForValue().set(key, serialized, ttl, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(key, serialized, ttl, TimeUnit.SECONDS);
         return dto;
 
     }
