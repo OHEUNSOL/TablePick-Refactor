@@ -36,7 +36,6 @@ public class ImprovedHotKeyService {
     private final RestaurantRepository restaurantRepository;
     private final MeterRegistry meterRegistry;
     private final DistributedLockProvider distributedLockProvider;
-    private final DbCallChecker dbCallChecker = new DbCallChecker("Hot Key + 락 적용");
 
     /**
      * Hot Key + Cache Avalanche 동시 대응 예시
@@ -97,7 +96,7 @@ public class ImprovedHotKeyService {
 
                 // 4. 캐시가 여전히 없다면 DB에서 조회 후 캐시에 저장
                 Restaurant restaurantFromDb = restaurantRepository.findById(id).orElse(null);
-                dbCallChecker.incrementDbSelectCount(); // 실제 DB 조회 횟수 증가
+                meterRegistry.counter("db.select", "service", SERVICE_NAME).increment();
 
                 if (restaurantFromDb == null) {
                     setCacheWithJitter(key, NULL_VALUE);
