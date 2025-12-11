@@ -25,7 +25,6 @@ public class EmailTestController {
 
     /**
      * 동기 메일 발송 테스트
-     * POST /api/test/notifications/reservations/{reservationId}/sync
      */
     @PostMapping("/reservations/{reservationId}/sync")
     public ResponseEntity<Void> sendSync(@PathVariable Long reservationId) {
@@ -37,7 +36,6 @@ public class EmailTestController {
 
     /**
      * 비동기(@Async) 메일 발송 테스트
-     * POST /api/test/notifications/reservations/{reservationId}/async
      */
     @PostMapping("/reservations/{reservationId}/async")
     public ResponseEntity<Void> sendAsync(@PathVariable Long reservationId) {
