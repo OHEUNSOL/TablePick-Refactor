@@ -32,6 +32,7 @@ public class Restaurant {
     
     private int maxCapacity;
 
+    private String mainImageUrl;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<ReservationSlot> reservationSlots = new ArrayList<>();
