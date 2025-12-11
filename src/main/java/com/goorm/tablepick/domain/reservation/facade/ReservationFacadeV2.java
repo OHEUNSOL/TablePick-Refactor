@@ -42,4 +42,13 @@ public class ReservationFacadeV2 {
             }
         }
     }
+
+    public void createReservationPessimistic(String userName, ReservationRequestDto request) {
+        Reservation reservation = reservationServiceV3.createReservationPessimistic(userName, request);
+
+        reservationNotificationService
+                .sendReservationCreatedNotificationAsync(reservation.getId());
+
+        return;
+    }
 }

@@ -1,6 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.2/index.js';
 
 // --- 커스텀 메트릭 ---
 const searchLatency = new Trend('restaurant_search_latency_ms', true);
@@ -78,4 +79,10 @@ export default function () {
 
     // 너무 빡세지 않게 살짝 쉼
     sleep(1);
+}
+export function handleSummary(data) {
+    return {
+        // 1. stdout: 터미널에 텍스트로 출력 (강제)
+        'stdout': textSummary(data, { indent: ' ', enableColors: true }),
+    };
 }

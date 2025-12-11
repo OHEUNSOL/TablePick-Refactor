@@ -47,3 +47,4 @@ out/
 .terraform.lock.hcl
 terraform.tfvars
 .env
+main.tf

@@ -34,7 +34,7 @@ public class ReservationServiceV1 {
     private final ReservationNotificationService reservationNotificationService;
 
     @Transactional
-    public void createReservation(String username, ReservationRequestDto request) {
+    public Reservation createReservation(String username, ReservationRequestDto request) {
         // 식당 검증
         Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
                 .orElseThrow(() -> new RestaurantException(RestaurantErrorCode.NOT_FOUND));
@@ -74,5 +74,7 @@ public class ReservationServiceV1 {
 
         // 예약 성공 후 메일 발송
         reservationNotificationService.sendReservationCreatedNotification(reservation.getId());
+
+        return reservation;
     }
 }

@@ -37,7 +37,27 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getAllRestaurants(pageable, member));
     }
 
-    @GetMapping("/complex-search")
+    @GetMapping("/complex-search/v0")
+    @Operation(summary = "식당 검색", description = "카테고리, 예약 날짜, 예약 시간으로 예약 가능한 식당을 검색합니다.")
+    public ResponseEntity<Page<RestaurantSearchResponseDto>> searchRestaurantsV0(
+            @RequestParam(value = "categoryId", required = false) Long categoryId,
+            @RequestParam(value = "reservationDate", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reservationDate,
+            @RequestParam(value = "reservationTime", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime reservationTime,
+            Pageable pageable) {
+
+        RestaurantSearchRequestDto requestDto = RestaurantSearchRequestDto.builder()
+                .categoryId(categoryId)
+                .reservationDate(reservationDate)
+                .reservationTime(reservationTime)
+                .build();
+
+        Page<RestaurantSearchResponseDto> response = restaurantService.searchRestaurantsV0(requestDto, pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/complex-search/v1")
     @Operation(summary = "식당 검색", description = "카테고리, 예약 날짜, 예약 시간으로 예약 가능한 식당을 검색합니다.")
     public ResponseEntity<Page<RestaurantSearchResponseDto>> searchRestaurantsV1(
             @RequestParam(value = "categoryId", required = false) Long categoryId,
@@ -53,7 +73,7 @@ public class RestaurantController {
                 .reservationTime(reservationTime)
                 .build();
 
-        Page<RestaurantSearchResponseDto> response = restaurantService.searchRestaurants(requestDto, pageable);
+        Page<RestaurantSearchResponseDto> response = restaurantService.searchRestaurantsV1(requestDto, pageable);
         return ResponseEntity.ok(response);
     }
 }

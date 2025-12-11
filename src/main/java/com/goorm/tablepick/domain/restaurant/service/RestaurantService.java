@@ -12,6 +12,7 @@ import com.goorm.tablepick.domain.restaurant.exception.RestaurantException;
 import com.goorm.tablepick.domain.restaurant.repository.RestaurantCategoryRepository;
 import com.goorm.tablepick.domain.restaurant.repository.RestaurantRepository;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantCategoryRepository restaurantCategoryRepository;
+    private final MeterRegistry meterRegistry;
 
     @Autowired
     ObjectMapper mapper;
@@ -42,6 +44,8 @@ public class RestaurantService {
         // 식당 검증
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantException(RestaurantErrorCode.NOT_FOUND));
+
+        meterRegistry.counter("db.select", "service", "RestaurantService").increment();
 
         RestaurantSummaryDto restaurantSummaryDto = RestaurantSummaryDto.from(restaurant);
         return restaurantSummaryDto;
@@ -77,7 +81,7 @@ public class RestaurantService {
         }
     }
 
-    public Page<RestaurantSearchResponseDto> searchRestaurants(RestaurantSearchRequestDto requestDto, Pageable pageable) {
+    public Page<RestaurantSearchResponseDto> searchRestaurantsV0(RestaurantSearchRequestDto requestDto, Pageable pageable) {
 
         Page<Restaurant> restaurants = restaurantRepository.findRestaurantsByComplexCondition_Problematic(
                 requestDto.getCategoryId(),
@@ -86,16 +90,36 @@ public class RestaurantService {
                 pageable
         );
 
-        // (N+1은 여기서 발생하지만, 일단 DTO에서 이미지 필드를 빼서 무시)
-        return restaurants.map(this::toRestaurantResponse);
+        return restaurants.map(this::toRestaurantResponseV0);
     }
 
-    private RestaurantSearchResponseDto toRestaurantResponse(Restaurant restaurant) {
-        // (이전 대화에서 이미지 필드는 DTO에서 빼기로 함)
+    public Page<RestaurantSearchResponseDto> searchRestaurantsV1(RestaurantSearchRequestDto requestDto, Pageable pageable) {
+
+        Page<Restaurant> restaurants = restaurantRepository.findRestaurantsByComplexCondition_Problematic(
+                requestDto.getCategoryId(),
+                requestDto.getReservationDate(),
+                requestDto.getReservationTime(),
+                pageable
+        );
+
+        return restaurants.map(this::toRestaurantResponseV1);
+    }
+
+    private RestaurantSearchResponseDto toRestaurantResponseV0(Restaurant restaurant) {
         return RestaurantSearchResponseDto.builder()
                 .id(restaurant.getId())
                 .address(restaurant.getAddress())
                 .restaurantCategory(restaurant.getRestaurantCategory().getName())
+                .mainImageUrl(restaurant.getRestaurantImages().getFirst().getImageUrl())
+                .build();
+    }
+
+    private RestaurantSearchResponseDto toRestaurantResponseV1(Restaurant restaurant) {
+        return RestaurantSearchResponseDto.builder()
+                .id(restaurant.getId())
+                .address(restaurant.getAddress())
+                .restaurantCategory(restaurant.getRestaurantCategory().getName())
+                .mainImageUrl(restaurant.getMainImageUrl())
                 .build();
     }
 }

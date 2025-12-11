@@ -20,11 +20,15 @@ public class RestaurantSearchResponseDto {
     @Schema(description = "식당 카테고리", example = "한식")
     private String restaurantCategory;
 
+    @Schema(description = "식당 메인 이미지")
+    private String mainImageUrl;
+
     @Builder
-    public RestaurantSearchResponseDto(Long id, String name, String address, String restaurantCategory) {
+    public RestaurantSearchResponseDto(Long id, String name, String address, String restaurantCategory, String mainImageUrl) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.restaurantCategory = restaurantCategory;
+        this.mainImageUrl =  mainImageUrl;
     }
 }

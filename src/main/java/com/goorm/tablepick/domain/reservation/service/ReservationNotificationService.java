@@ -17,16 +17,20 @@ public class ReservationNotificationService {
     private final MeterRegistry meterRegistry;
 
     public void sendReservationCreatedNotification(Long reservationId) {
-        doSendMail(reservationId);
+        try {
+            emailSender.sendReservationEmail(reservationId);
+
+            meterRegistry.counter("mail.sent.success", "type", "sync").increment();
+
+            log.info("예약 완료 메일 발송. reservationId={}", reservationId);
+        } catch (Exception e) {
+            log.error("예약 완료 메일 발송 중 예외 발생. reservationId={}", reservationId, e);
+        }
     }
 
     //비동기로 메일 전송
     @Async("mailTaskExecutor")
     public void sendReservationCreatedNotificationAsync(Long reservationId) {
-        doSendMail(reservationId);
-    }
-
-    private void doSendMail(Long reservationId) {
         try {
             emailSender.sendReservationEmail(reservationId);
 
@@ -37,4 +41,5 @@ public class ReservationNotificationService {
             log.error("예약 완료 메일 발송 중 예외 발생. reservationId={}", reservationId, e);
         }
     }
+
 }

@@ -53,4 +53,20 @@ public class ReservationFacadeV4 {
         }
     }
 
+    public void createReservationPessimistic(String memberName, ReservationRequestDto request) {
+        Reservation reservation = reservationServiceV4.createReservationPessimistic(memberName, request);
+
+        ReservationConfirmedEvent reservationConfirmedEvent = ReservationConfirmedEvent.builder()
+                .reservationId(reservation.getId())
+                .email(memberName)
+                .restaurantName(reservation.getRestaurantName())
+                .confirmedAt(reservation.getCreatedAt())
+                .partySize(reservation.getPartySize())
+                .build();
+
+        kafkaTemplate.send("reservation.confirmed", jsonUtils.toJsonString(reservationConfirmedEvent));
+
+        return;
+    }
+
 }

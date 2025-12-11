@@ -103,8 +103,8 @@ public class ReservationTestController {
     // ============================================================
     // V3 + FacadeV1: 외부 기능을 트랜잭션에서 분리 (동기 실행)
     // ============================================================
-    @PostMapping("/v3/sync")
-    public ResponseEntity<Void> createV3SyncExternal(
+    @PostMapping("/v3/sync/opt")
+    public ResponseEntity<Void> createV3SyncExternalOpt(
             @RequestParam String username,
             @RequestBody ReservationRequestDto request
     ) throws InterruptedException {
@@ -116,11 +116,22 @@ public class ReservationTestController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/v3/sync/pes")
+    public ResponseEntity<Void> createV3SyncExternalPes(
+            @RequestParam String username,
+            @RequestBody ReservationRequestDto request
+    ) {
+
+        reservationFacadeV1.createReservationPessimistic(username, request);
+
+        return ResponseEntity.ok().build();
+    }
+
     // ============================================================
     // V3 + FacadeV2: 외부 기능 비동기(@Async) 실행
     // ============================================================
-    @PostMapping("/v3/async")
-    public ResponseEntity<Void> createV3AsyncExternal(
+    @PostMapping("/v3/async/opt")
+    public ResponseEntity<Void> createV3AsyncExternalOpt(
             @RequestParam String username,
             @RequestBody ReservationRequestDto request
     ) throws InterruptedException {
@@ -132,11 +143,22 @@ public class ReservationTestController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/v3/async/pes")
+    public ResponseEntity<Void> createV3AsyncExternalPes(
+            @RequestParam String username,
+            @RequestBody ReservationRequestDto request
+    ) {
+
+        reservationFacadeV2.createReservationPessimistic(username, request);
+
+        return ResponseEntity.ok().build();
+    }
+
     // ============================================================
     // V3 + FacadeV3: 외부 기능을 Kafka 기반 비동기 실행
     // ============================================================
-    @PostMapping("/v3/kafka")
-    public ResponseEntity<Void> createV3KafkaExternal(
+    @PostMapping("/v3/kafka/opt")
+    public ResponseEntity<Void> createV3KafkaExternalOpt(
             @RequestParam String username,
             @RequestBody ReservationRequestDto request
     ) throws InterruptedException{
@@ -149,14 +171,25 @@ public class ReservationTestController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/v3/kafka/pes")
+    public ResponseEntity<Void> createV3KafkaExternalPes(
+            @RequestParam String username,
+            @RequestBody ReservationRequestDto request
+    ) {
+
+        reservationFacadeV3.createReservationPessimistic(username, request);
+
+        return ResponseEntity.ok().build();
+    }
+
     // ============================================================
     // V4 + FacadeV4: Kafka + Redis 만석 플래그 (핫 슬롯 보호)
     //  - 자리 꽉 찼을 때 Redis full 키 설정
     //  - 취소 시 full 키 삭제
     //  - 키 만료 이후에도 여전히 만석이면 다시 full 키 생성
     // ============================================================
-    @PostMapping("/v4/kafka-redis")
-    public ResponseEntity<Void> createV4KafkaRedis(
+    @PostMapping("/v4/kafka-redis/opt")
+    public ResponseEntity<Void> createV4KafkaRedisOpt(
             @RequestParam String username,
             @RequestBody ReservationRequestDto request
     ) throws InterruptedException{
@@ -166,6 +199,17 @@ public class ReservationTestController {
         //  3) 좌석이 꽉 차면 full 키 설정
         //  4) Kafka 이벤트 발행으로 메일 비동기 처리
         reservationFacadeV4.createReservation(username, request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/v4/kafka-redis/pes")
+    public ResponseEntity<Void> createV4KafkaRedisPes(
+            @RequestParam String username,
+            @RequestBody ReservationRequestDto request
+    ) {
+
+        reservationFacadeV4.createReservationPessimistic(username, request);
 
         return ResponseEntity.ok().build();
     }

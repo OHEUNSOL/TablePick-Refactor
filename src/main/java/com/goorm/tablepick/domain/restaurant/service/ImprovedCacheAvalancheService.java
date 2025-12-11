@@ -35,7 +35,6 @@ public class ImprovedCacheAvalancheService {
     private final ObjectMapper objectMapper;
     private final RestaurantRepository restaurantRepository;
     private final MeterRegistry meterRegistry;
-    private final DbCallChecker dbCallChecker = new DbCallChecker("JITTER 적용");
 
 
     public RestaurantSummaryDto getRestaurantByIdWithJitter(Long id) throws JsonProcessingException {
@@ -61,7 +60,7 @@ public class ImprovedCacheAvalancheService {
 
         // 3. 캐시에 아예 없는 경우 DB에서 조회
         Restaurant restaurantFromDb = restaurantRepository.findById(id).orElse(null);
-        dbCallChecker.incrementDbSelectCount();
+        meterRegistry.counter("db.select", "service", SERVICE_NAME).increment();
 
         // 4. DB 조회 결과가 null이더라도 캐시에 저장 (짧은 TTL 적용)
         if (restaurantFromDb == null) {
