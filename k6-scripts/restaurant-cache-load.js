@@ -68,7 +68,7 @@ export default function () {
     if (TEST_SCENARIO === 'stability') {
         sleep(0);
     } else {
-        sleep(0.01);
+        sleep(0.5);
     }
 }
 
