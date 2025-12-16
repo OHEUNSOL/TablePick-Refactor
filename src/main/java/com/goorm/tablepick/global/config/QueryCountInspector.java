@@ -1,4 +1,4 @@
-package com.goorm.tablepick.domain.reservation.config;
+package com.goorm.tablepick.global.config;
 
 import com.goorm.tablepick.domain.reservation.monitoring.BatchContext;
 import com.goorm.tablepick.domain.reservation.monitoring.BatchContextHolder;

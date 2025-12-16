@@ -17,20 +17,17 @@ spring:
         show_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
         session_factory:
-          statement_inspector: com.goorm.tablepick.domain.reservation.config.QueryCountInspector
+          statement_inspector: com.goorm.tablepick.global.config.QueryCountInspector
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
   data:
     redis:
-      host: localhost
+      host: ${REDIS_HOST:localhost}
       port: 6379
 
   kafka:
     # Kafka 서버 주소
-    bootstrap-servers:
-      - localhost:9092
-      - localhost:19092
-      - localhost:29092
+    bootstrap-servers: ${KAFKA_HOST:localhost:9092,localhost:19092,localhost:29092}
 
     producer:
       # 메시지의 key 직렬화 방식 : 자바 객체를 문자열(String)로 변환해서 Kafka에 전송
@@ -42,7 +39,7 @@ spring:
         partitioner.class: org.apache.kafka.clients.producer.RoundRobinPartitioner
 
   mail:
-    host: localhost
+    host: ${MAIL_HOST:localhost}
     port: 1025        # MailHog 기본 SMTP 포트
     username:
     password:

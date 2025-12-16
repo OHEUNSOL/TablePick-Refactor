@@ -325,6 +325,9 @@ resource "aws_instance" "app_main" {
               sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
               sudo systemctl start amazon-cloudwatch-agent
               sudo systemctl enable amazon-cloudwatch-agent
+
+              # MailHog Docker로 띄우기
+              docker run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
               EOF
 
   tags = {
@@ -542,11 +545,11 @@ resource "aws_instance" "monitoring" {
   }
 }
 
-# EC2 인스턴스 - redis (Redis 6379)
+# EC2 인스턴스 - redis (Redis + redis_exporter 자동 설치)
 resource "aws_instance" "redis" {
-  ami                    = "ami-0e9bfdb247cc8de84"  # Ubuntu 22.04 LTS AMI
+  ami                    = "ami-0e9bfdb247cc8de84"  # Ubuntu 22.04 LTS
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.public_2.id  # 다른 AZ로 분산
+  subnet_id              = aws_subnet.public_2.id
   monitoring             = true
   vpc_security_group_ids = [aws_security_group.ec2.id]
   key_name               = aws_key_pair.portfolio.key_name
@@ -559,7 +562,9 @@ resource "aws_instance" "redis" {
 
   user_data = <<-EOF
               #!/bin/bash
-              set -e  # 오류 발생 시 스크립트 중단
+              set -e
+
+              # 기존 SSM, AWS CLI, Docker, CloudWatch 설정 (생략 없이 그대로 복붙)
 
               # SSM Agent 설치
               sudo snap install amazon-ssm-agent --classic
@@ -589,11 +594,9 @@ resource "aws_instance" "redis" {
               sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               sudo chmod +x /usr/local/bin/docker-compose
 
-              # CloudWatch Agent 설치 및 설정
+              # CloudWatch Agent 설치 및 설정 (기존 그대로 유지)
               sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
               sudo dpkg -i amazon-cloudwatch-agent.deb
-
-              # CloudWatch Agent 설정 (메모리 및 스왑 모니터링)
               sudo mkdir -p /opt/aws/amazon-cloudwatch-agent/etc/
               sudo bash -c 'cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json' << 'EOT'
               {
@@ -604,33 +607,34 @@ resource "aws_instance" "redis" {
                 "metrics": {
                   "append_dimensions": {
                     "InstanceId": "$${aws:InstanceId}",
-                    "InstanceType": "$${aws:InstanceType}",
-                    "AutoScalingGroupName": "$${aws:AutoScalingGroupName}"
+                    "InstanceType": "$${aws:InstanceType}"
                   },
                   "metrics_collected": {
-                    "mem": {
-                      "measurement": [
-                        "mem_used_percent"
-                      ],
-                      "metrics_collection_interval": 60
-                    },
-                    "swap": {
-                      "measurement": [
-                        "swap_used_percent"
-                      ]
-                    }
+                    "mem": { "measurement": ["mem_used_percent"] },
+                    "swap": { "measurement": ["swap_used_percent"] }
                   }
                 }
               }
               EOT
-
-              # CloudWatch Agent 시작
               sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
               sudo systemctl start amazon-cloudwatch-agent
               sudo systemctl enable amazon-cloudwatch-agent
 
-              # Redis Docker로 띄우기
-              docker run -d -p 6379:6379 --name redis redis
+              # Redis 본체 실행
+              docker run -d --name redis \
+                -p 6379:6379 \
+                --restart unless-stopped \
+                redis:7-alpine
+
+              # Redis Exporter 실행 (Prometheus가 Redis 메트릭 수집 가능하게!)
+              docker run -d --name redis-exporter \
+                -p 9121:9121 \
+                --restart unless-stopped \
+                -e REDIS_ADDR=redis://localhost:6379 \
+                oliver006/redis_exporter:latest \
+                --redis.addr=redis://localhost:6379 \
+                --web.listen-address=:9121
+
               EOF
 
   tags = {
@@ -743,7 +747,6 @@ resource "aws_instance" "kafka" {
 # 탄력적 IP (app-main에 할당, 필요시 다른 인스턴스에도 추가)
 resource "aws_eip" "app_main" {
   instance = aws_instance.app_main.id
-  vpc      = true
 
   tags = {
     Name = "portfolio-app-main-eip"
@@ -1102,4 +1105,14 @@ output "ecr_repository_url" {
 
 output "rds_endpoint" {
   value = aws_db_instance.portfolio.endpoint
+}
+
+output "redis_private_ip" {
+  value       = aws_instance.redis.private_ip
+  description = "Redis private IP (application.yml에서 사용)"
+}
+
+output "kafka_private_ip" {
+  value       = aws_instance.kafka.private_ip
+  description = "Kafka private IP (bootstrap-servers에 사용)"
 }

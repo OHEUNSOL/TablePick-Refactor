@@ -1,4 +1,4 @@
-package com.goorm.tablepick.domain.reservation.config;
+package com.goorm.tablepick.global.config;
 
 public class RequestContextHolder {
 

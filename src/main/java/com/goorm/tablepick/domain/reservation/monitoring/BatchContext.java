@@ -1,6 +1,6 @@
 package com.goorm.tablepick.domain.reservation.monitoring;
 
-import com.goorm.tablepick.domain.reservation.config.QueryType;
+import com.goorm.tablepick.global.config.QueryType;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

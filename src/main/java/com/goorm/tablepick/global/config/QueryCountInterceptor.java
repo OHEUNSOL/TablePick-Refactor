@@ -1,4 +1,4 @@
-package com.goorm.tablepick.domain.reservation.config;
+package com.goorm.tablepick.global.config;
 
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;

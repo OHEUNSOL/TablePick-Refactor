@@ -3,11 +3,11 @@ global:
   evaluation_interval: 5s
 
 scrape_configs:
-  - job_name: 'spring-boot-app'
+  - job_name: 'app-main'
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['host.docker.internal:8080']
-  - job_name: 'mail-worker'
+  - job_name: 'app-mail'
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ 'host.docker.internal:8081' ] # 로컬호스트 8081
