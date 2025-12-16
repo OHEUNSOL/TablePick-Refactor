@@ -44,23 +44,26 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:main-$IMAGE_TAG
 
       - name: Deploy to Main EC2
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           aws ssm send-command \
             --instance-ids ${{ secrets.EC2_MAIN_INSTANCE_ID }} \
             --document-name "AWS-RunShellScript" \
-            --parameters commands='[
-              "docker pull 443370695285.dkr.ecr.ap-northeast-2.amazonaws.com/backend-portfolio:main-${{ env.IMAGE_TAG }}",
-              "docker stop portfolio-main || true",
-              "docker rm portfolio-main || true",
-              "docker run -d --name portfolio-main -p 8080:8080 --restart unless-stopped \
-                -e SPRING_PROFILES_ACTIVE=prod \
-                -e SPRING_DATASOURCE_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}/portfolio?useSSL=false\&serverTimezone=Asia/Seoul\&allowPublicKeyRetrieval=true \
-                -e SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_PASSWORD }} \
-                -e SPRING_DATA_REDIS_HOST=${{ secrets.REDIS_HOST }} \
-                -e SPRING_KAFKA_BOOTSTRAP_SERVERS=${{ secrets.KAFKA_HOST }}:9092 \
-                -e SPRING_MAIL_HOST=localhost \
-                -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-                443370695285.dkr.ecr.ap-northeast-2.amazonaws.com/backend-portfolio:main-${{ env.IMAGE_TAG }}"
-            ]'
-        env:
-          IMAGE_TAG: ${{ github.sha }}
+            --parameters '{
+              "commands": [
+                "docker pull $ECR_REGISTRY/$ECR_REPOSITORY:main-$IMAGE_TAG",
+                "docker stop portfolio-main || true",
+                "docker rm portfolio-main || true",
+                "docker run -d --name portfolio-main -p 8080:8080 -e JAVA_OPTS=-Xmx256m \\
+                  -e SPRING_PROFILES_ACTIVE=prod \\
+                  -e SPRING_DATASOURCE_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}/portfolio?useSSL=false\\&serverTimezone=Asia/Seoul\\&allowPublicKeyRetrieval=true \\
+                  -e SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_PASSWORD }} \\
+                  -e SPRING_DATA_REDIS_HOST=${{ secrets.REDIS_PRIVATE_IP }} \\ 
+                  -e SPRING_KAFKA_BOOTSTRAP_SERVERS=${{ secrets.KAFKA_PRIVATE_IP }}:9092 \\ 
+                  -e SPRING_MAIL_HOST=localhost \\
+                  -e JWT_SECRET=${{ secrets.JWT_SECRET }} \\
+                  $ECR_REGISTRY/$ECR_REPOSITORY:main-$IMAGE_TAG"
+              ]
+            }'
