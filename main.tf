@@ -531,6 +531,12 @@ resource "aws_instance" "monitoring" {
                 - job_name: 'app-mail'
                   static_configs:
                     - targets: ['${aws_instance.app_mail.private_ip}:8081']  # app-mail private IP (메트릭 엔드포인트 가정)
+                - job_name: 'redis'
+                    static_configs:
+                      - targets: ['${aws_instance.redis.private_ip}:9121']
+                        labels:
+                          instance: "portfolio-redis"
+                          application: "redis"
               EOC
 
               # Prometheus Docker로 띄우기
