@@ -22,12 +22,12 @@ spring:
 
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${REDIS_PRIVATE_IP:localhost}
       port: 6379
 
   kafka:
     # Kafka 서버 주소
-    bootstrap-servers: ${KAFKA_HOST:localhost:9092,localhost:19092,localhost:29092}
+    bootstrap-servers: ${KAFKA_PRIVATE_IP:localhost:9092,localhost:19092,localhost:29092}
 
     producer:
       # 메시지의 key 직렬화 방식 : 자바 객체를 문자열(String)로 변환해서 Kafka에 전송
@@ -39,7 +39,7 @@ spring:
         partitioner.class: org.apache.kafka.clients.producer.RoundRobinPartitioner
 
   mail:
-    host: ${MAIL_HOST:localhost}
+    host: localhost
     port: 1025        # MailHog 기본 SMTP 포트
     username:
     password:
