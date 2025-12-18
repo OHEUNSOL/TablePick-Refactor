@@ -31,7 +31,7 @@ if (TEST_SCENARIO === 'performance') {
     targetRestaurantId = -9999; // DB에 절대 없는 ID
 } else if (TEST_SCENARIO === 'stability') {
     // [3단계] 핫키/아발란치(HotKey): 매우 높은 동시성으로 캐시 만료 시점의 DB 부하 확인
-    targetVUs = 100; // 순간적으로 많은 유저가 몰림
+    targetVUs = 130; // 순간적으로 많은 유저가 몰림
     targetRestaurantId = 1;
 }
 

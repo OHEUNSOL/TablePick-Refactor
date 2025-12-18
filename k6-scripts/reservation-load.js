@@ -28,55 +28,47 @@ const successCount = new Counter('reservation_success_count');
 const soldOutCount = new Counter('reservation_sold_out_count');
 
 // === 2. 메트릭 정의 ===
-const v2OptTrend = new Trend('http_req_duration_v2_opt');
 const v2PesTrend = new Trend('http_req_duration_v2_pes');
 const v3SyncTrend = new Trend('http_req_duration_v3_sync');
-const v3AsyncTrend = new Trend('http_req_duration_v3_async');
 const v3KafkaTrend = new Trend('http_req_duration_v3_kafka');
+const v3KafkaOptTrend = new Trend('http_req_duration_v3_kafka_opt');
 const v4KafkaRedis = new Trend('http_req_duration_v4_kafka_redis');
 
 // === 3. 시나리오 정의 ===
 const scenarios = {
-    v2_opt: {
-        executor: 'constant-vus',
-        exec: 'testV2Optimistic',
-        vus: 30,
-        duration: '20s',
-        tags: { version: 'v2_opt' },
-    },
     v2_pes: {
         executor: 'constant-vus',
         exec: 'testV2Pessimistic',
         vus: 30,
-        duration: '20s',
+        duration: '40s',
         tags: { version: 'v2_pes' },
     },
     v3_sync: {
         executor: 'constant-vus',
         exec: 'testV3Sync',
         vus: 30,
-        duration: '20s',
+        duration: '40s',
         tags: { version: 'v3_sync' },
-    },
-    v3_async: {
-        executor: 'constant-vus',
-        exec: 'testV3Async',
-        vus: 30,
-        duration: '20s',
-        tags: { version: 'v3_async' },
     },
     v3_kafka: {
         executor: 'constant-vus',
         exec: 'testV3Kafka',
-        vus: 30,
-        duration: '20s',
+        vus: 70,
+        duration: '40s',
         tags: { version: 'v3_kafka' },
+    },
+    v3_kafkaOpt: {
+        executor: 'constant-vus',
+        exec: 'testV3KafkaOpt',
+        vus: 70,
+        duration: '40s',
+        tags: { version: 'v3_kafkaOpt' },
     },
     v4_redis: {
         executor: 'constant-vus',
         exec: 'testV4KafkaRedis',
-        vus: 30,
-        duration: '20s',
+        vus: 150,
+        duration: '40s',
         tags: { version: 'v4_kafka_redis' },
     },
 };
@@ -170,11 +162,6 @@ function postReservation(path, trendMetric) {
 }
 
 // === 5. 실제 실행 함수들 ===
-
-export function testV2Optimistic() {
-    postReservation('/api/reservations/test/v2/optimistic', v2OptTrend);
-}
-
 export function testV2Pessimistic() {
     postReservation('/api/reservations/test/v2/pessimistic', v2PesTrend);
 }
@@ -183,12 +170,12 @@ export function testV3Sync() {
     postReservation('/api/reservations/test/v3/sync/pes', v3SyncTrend);
 }
 
-export function testV3Async() {
-    postReservation('/api/reservations/test/v3/async/pes', v3AsyncTrend);
-}
-
 export function testV3Kafka() {
     postReservation('/api/reservations/test/v3/kafka/pes', v3KafkaTrend);
+}
+
+export function testV3KafkaOpt() {
+    postReservation('/api/reservations/test/v3/kafka/opt', v3KafkaOptTrend);
 }
 
 export function testV4KafkaRedis() {
