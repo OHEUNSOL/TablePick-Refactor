@@ -643,7 +643,7 @@ resource "aws_instance" "redis" {
 # EC2 인스턴스 - kafka (Kafka 9092 + Zookeeper)
 resource "aws_instance" "kafka" {
   ami                    = "ami-0e9bfdb247cc8de84"  # Ubuntu 22.04 LTS AMI
-  instance_type          = "t2.micro"
+  instance_type          = "t3.small"
   subnet_id              = aws_subnet.public_1.id
   monitoring             = true
   vpc_security_group_ids = [aws_security_group.ec2.id]
@@ -727,7 +727,7 @@ resource "aws_instance" "kafka" {
               sudo systemctl start amazon-cloudwatch-agent
               sudo systemctl enable amazon-cloudwatch-agent
 
-              # Kafka Docker로 띄우기 (Zookeeper 연결)
+              # Kafka Docker로 띄우기
               docker run -d --name kafka \
                               -p 9092:9092 \
                               --restart unless-stopped \
@@ -739,7 +739,7 @@ resource "aws_instance" "kafka" {
                               -e KAFKA_INTER_BROKER_LISTENER_NAME='PLAINTEXT' \
                               -e KAFKA_CONTROLLER_LISTENER_NAMES='CONTROLLER' \
                               -e KAFKA_CONTROLLER_QUORUM_VOTERS='1@localhost:9093' \
-                              -e KAFKA_NUM_PARTITIONS=10 \                    # ← 여기 추가! 기본 파티션 10개
+                              -e KAFKA_NUM_PARTITIONS=2 \                    # ← 여기 추가! 기본 파티션 10개
                               -e KAFKA_DEFAULT_REPLICATION_FACTOR=1 \         # 단일 노드라 복제 1
                               -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
                               -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
