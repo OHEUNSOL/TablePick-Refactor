@@ -5,7 +5,7 @@ SET @@cte_max_recursion_depth = 2000001;
 -- [1] 생성할 개수 설정
 SET @MEMBER_COUNT = 50000;
 SET @RESTAURANT_COUNT = 1000000;
-SET @CATEGORY_COUNT = 50;
+SET @CATEGORY_COUNT = 100;
 
 -- =================================================================
 -- 1. Member (회원)
