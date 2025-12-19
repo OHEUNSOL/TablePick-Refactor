@@ -54,6 +54,6 @@ jobs:
                 "docker stop portfolio-main || true",
                 "docker rm portfolio-main || true",
                 "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
-                "docker run -d --name portfolio-main -p 8080:8080 -e JAVA_OPTS=-Xmx256m -e SPRING_PROFILES_ACTIVE=prod -e SPRING_DATASOURCE_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}/portfolio?useSSL=false\\&serverTimezone=Asia/Seoul\\&allowPublicKeyRetrieval=true -e SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_PASSWORD }} -e SPRING_DATA_REDIS_HOST=${{ secrets.REDIS_PRIVATE_IP }} -e SPRING_KAFKA_BOOTSTRAP_SERVERS=${{ secrets.KAFKA_PRIVATE_IP }}:9092 -e SPRING_MAIL_HOST=localhost -e JWT_SECRET=${{ secrets.JWT_SECRET }} '$REGISTRY'/'$ECR_REPOSITORY':main-'$GITHUB_SHA'"
+                "docker run -d --name portfolio-main -p 8080:8080 -e JAVA_OPTS=-Xmx256m -e SPRING_PROFILES_ACTIVE=prod -e SPRING_DATASOURCE_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}/portfolio?useSSL=false\\&serverTimezone=Asia/Seoul\\&allowPublicKeyRetrieval=true -e SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_PASSWORD }} -e SPRING_MAIL_HOST=${{ secrets.EC2_PUBLIC_IP }} -e SPRING_DATA_REDIS_HOST=${{ secrets.REDIS_PRIVATE_IP }} -e SPRING_KAFKA_BOOTSTRAP_SERVERS=${{ secrets.KAFKA_PRIVATE_IP }}:9092 -e SPRING_MAIL_HOST=localhost -e JWT_SECRET=${{ secrets.JWT_SECRET }} '$REGISTRY'/'$ECR_REPOSITORY':main-'$GITHUB_SHA'"
               ]
             }'
