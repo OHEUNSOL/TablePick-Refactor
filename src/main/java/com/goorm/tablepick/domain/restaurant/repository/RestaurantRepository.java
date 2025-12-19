@@ -41,16 +41,13 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
             "JOIN r.restaurantCategory rc " +
             "WHERE " +
             // 1. 카테고리
-            "(:categoryId IS NULL OR rc.id = :categoryId) " +
+            "(rc.id = :categoryId) " +
             // 2. 예약 시간 (EXISTS 서브쿼리)
-            "AND (" +
-            "    (:reservationDate IS NULL OR :reservationTime IS NULL) " +
-            "    OR EXISTS (SELECT s.id FROM ReservationSlot s " +
+            "AND EXISTS (SELECT s.id FROM ReservationSlot s " +
             "                 WHERE s.restaurant = r " +
             "                 AND s.date = :reservationDate " +
             "                 AND s.time = :reservationTime " +
-            "                 AND s.count > 0) " +
-            ")"
+            "                 AND s.count > 0) "
     )
     Page<Restaurant> findRestaurantsByComplexCondition_Problematic(
             @Param("categoryId") Long categoryId,

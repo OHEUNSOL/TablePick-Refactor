@@ -2,39 +2,54 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.2/index.js';
 
+// 환경 변수 설정
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080';
 const RESERVATION_ID = __ENV.RESERVATION_ID || 1;
-// 실행할 때 타입을 입력받음 (기본값: sync)
-const TEST_TYPE = __ENV.TYPE || 'sync';
+const TYPE = __ENV.TYPE || 'async'; // sync, async, kafka
+const LOAD_PROFILE = __ENV.PROFILE || 'safety'; // safety(일반), crash(폭파)
 
-// 시나리오 설정 객체
-const scenarios = {
-    sync: {
+// 1. 부하 프로필 정의
+const profiles = {
+    // [안전 모드] 성능 비교용 (VUs 50 고정)
+    safety: {
         executor: 'constant-vus',
         vus: 20,
-        duration: '20s',
-        exec: 'sendSync',
+        duration: '30s',
     },
-    async: {
-        executor: 'constant-vus',
-        vus: 20,
-        duration: '20s',
-        exec: 'sendAsync',
-    },
-    kafka: {
-        executor: 'constant-vus',
-        vus: 20,
-        duration: '20s',
-        exec: 'sendKafka',
+    // [파괴 모드] 한계 돌파용 (VUs 0 -> 500 급증)
+    crash: {
+        executor: 'ramping-vus',
+        startVUs: 0,
+        stages: [
+            { duration: '10s', target: 10 },  // 웜업
+            { duration: '20s', target: 200 }, // 폭주
+            { duration: '10s', target: 200 }, // 유지
+            { duration: '10s', target: 0 },   // 종료
+        ],
     },
 };
 
+// 2. 시나리오 매핑
 export const options = {
-    // 입력받은 TYPE에 해당하는 시나리오만 실행
     scenarios: {
-        [TEST_TYPE]: scenarios[TEST_TYPE],
+        [TYPE]: {
+            ...profiles[LOAD_PROFILE], // 선택한 프로필(safety/crash) 적용
+            exec: getExecFunctionName(TYPE),
+        },
+    },
+    // 파괴 테스트 시 에러가 많이 나도 멈추지 않게 설정
+    thresholds: {
+        http_req_failed: ['rate<1.00'], // 에러율 100%여도 테스트 강행
     },
 };
+
+// 함수 이름 매핑 도우미
+function getExecFunctionName(type) {
+    if (type === 'sync') return 'sendSync';
+    if (type === 'async') return 'sendAsync';
+    if (type === 'kafka') return 'sendKafka';
+    return 'sendAsync';
+}
 
 function buildUrl(suffix) {
     return `${BASE_URL}/api/test/email/reservations/${RESERVATION_ID}/${suffix}`;
@@ -47,7 +62,15 @@ export function sendSync() {
 
 export function sendAsync() {
     const res = http.post(buildUrl('async'), null);
-    check(res, { 'async 2xx': (r) => r.status >= 200 && r.status < 300 });
+    // Crash 테스트 시 500 에러 체크를 위해 성공/실패 모두 집계
+    check(res, {
+        'async success': (r) => r.status >= 200 && r.status < 300,
+        'async failed (500/Timeout)': (r) => r.status >= 500
+    });
+
+    if (__ENV.PROFILE === 'safety') {
+        sleep(1);
+    }
 }
 
 export function sendKafka() {
@@ -57,7 +80,6 @@ export function sendKafka() {
 
 export function handleSummary(data) {
     return {
-        // 1. stdout: 터미널에 텍스트로 출력 (강제)
         'stdout': textSummary(data, { indent: ' ', enableColors: true }),
     };
 }

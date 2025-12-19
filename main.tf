@@ -137,14 +137,6 @@ resource "aws_security_group" "ec2" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Zookeeper (Kafka에 필요)
-  ingress {
-    from_port   = 2181
-    to_port     = 2181
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   # MailHog SMTP (1025) and Web UI (8025)
   ingress {
     from_port   = 1025
@@ -651,7 +643,7 @@ resource "aws_instance" "redis" {
 # EC2 인스턴스 - kafka (Kafka 9092 + Zookeeper)
 resource "aws_instance" "kafka" {
   ami                    = "ami-0e9bfdb247cc8de84"  # Ubuntu 22.04 LTS AMI
-  instance_type          = "t2.micro"
+  instance_type          = "t3.small"
   subnet_id              = aws_subnet.public_1.id
   monitoring             = true
   vpc_security_group_ids = [aws_security_group.ec2.id]
@@ -735,14 +727,25 @@ resource "aws_instance" "kafka" {
               sudo systemctl start amazon-cloudwatch-agent
               sudo systemctl enable amazon-cloudwatch-agent
 
-              # Zookeeper Docker로 띄우기
-              docker run -d -p 2181:2181 --name zookeeper zookeeper
-
-              # Kafka Docker로 띄우기 (Zookeeper 연결)
-              docker run -d -p 9092:9092 --name kafka \
-                -e KAFKA_ZOOKEEPER_CONNECT=localhost:2181 \
-                -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
-                confluentinc/cp-kafka
+              # Kafka Docker로 띄우기
+              docker run -d --name kafka \
+                              -p 9092:9092 \
+                              --restart unless-stopped \
+                              -e KAFKA_NODE_ID=1 \
+                              -e KAFKA_PROCESS_ROLES='broker,controller' \
+                              -e KAFKA_LISTENERS='PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093' \
+                              -e KAFKA_ADVERTISED_LISTENERS='PLAINTEXT://localhost:9092' \
+                              -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP='PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT' \
+                              -e KAFKA_INTER_BROKER_LISTENER_NAME='PLAINTEXT' \
+                              -e KAFKA_CONTROLLER_LISTENER_NAMES='CONTROLLER' \
+                              -e KAFKA_CONTROLLER_QUORUM_VOTERS='1@localhost:9093' \
+                              -e KAFKA_NUM_PARTITIONS=2 \                    # ← 여기 추가! 기본 파티션 10개
+                              -e KAFKA_DEFAULT_REPLICATION_FACTOR=1 \         # 단일 노드라 복제 1
+                              -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+                              -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+                              -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+                              -e KAFKA_AUTO_CREATE_TOPICS_ENABLE='true' \
+                              apache/kafka:4.0.0
               EOF
 
   tags = {

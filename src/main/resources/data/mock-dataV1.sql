@@ -69,7 +69,7 @@ SELECT
     CONCAT('서울시 어딘가 ', n, '번길'),
     (37.4 + RAND() * 0.2),          -- 위도
     (126.8 + RAND() * 0.4),         -- 경도
-    FLOOR(20 + RAND() * 80),        -- max_capacity
+    5,        -- max_capacity
     CONCAT('https://example.com/main_', n, '.jpg'),  -- 🔹 main_image_url 랜덤(규칙) 값
     1 + MOD(n - 1, @CATEGORY_COUNT) -- 카테고리 ID (1~50)
 FROM numbers;
@@ -88,37 +88,44 @@ SELECT
     1 + MOD(n - 1, @RESTAURANT_COUNT)
 FROM numbers;
 
+
 -- =================================================================
--- 9. ReservationSlot (예약 슬롯) - 120만 개 (식당 1만개 × 30일 × 4타임)
+-- 9. ReservationSlot (예약 슬롯) - (식당 2만개 × 7일 × 10타임 = 140만 개)
 -- =================================================================
-SET @SLOT_RESTAURANT_MAX = 10000;  -- 슬롯을 생성할 식당 개수 (1 ~ 10000번 식당)
+SET @SLOT_RESTAURANT_MAX = 20000;
 
 INSERT INTO reservation_slot (date, time, count, version, restaurant_id)
-WITH RECURSIVE numbers AS (
-    SELECT 1 AS n
-    UNION ALL
-    SELECT n + 1
-    FROM numbers
-    WHERE n <= @SLOT_RESTAURANT_MAX  -- 1 ~ 10000까지만 슬롯 생성
-), dates AS (
-    SELECT 0 AS day_offset UNION ALL SELECT 1  UNION ALL SELECT 2  UNION ALL SELECT 3  UNION ALL SELECT 4  UNION ALL
-    SELECT 5  UNION ALL SELECT 6  UNION ALL SELECT 7  UNION ALL SELECT 8  UNION ALL SELECT 9  UNION ALL
-    SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL
-    SELECT 15 UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19 UNION ALL
-    SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23 UNION ALL SELECT 24 UNION ALL
-    SELECT 25 UNION ALL SELECT 26 UNION ALL SELECT 27 UNION ALL SELECT 28 UNION ALL SELECT 29
-), times AS (
-    SELECT '17:00:00' AS slot_time UNION ALL
-    SELECT '18:00:00' UNION ALL
-    SELECT '19:00:00' UNION ALL
-    SELECT '20:00:00'
-)
+WITH RECURSIVE
+    restaurants AS (
+        SELECT 1 AS rid
+        UNION ALL
+        SELECT rid + 1 FROM restaurants WHERE rid < @SLOT_RESTAURANT_MAX
+    ),
+    days AS (
+        SELECT 1 AS day_idx
+        UNION ALL
+        SELECT day_idx + 1 FROM days WHERE day_idx < 7
+    ),
+    times AS (
+        SELECT 0 AS time_idx
+        UNION ALL
+        SELECT time_idx + 1 FROM times WHERE time_idx < 9
+    )
 SELECT
-    DATE_ADD(CURDATE(), INTERVAL dates.day_offset DAY),  -- 30일
-    times.slot_time,                                     -- 4타임
-    FLOOR(5 + RAND() * 10),                              -- 5~14석
-    0,
-    numbers.n                                            -- restaurant_id: 1 ~ 10000
-FROM numbers
-         CROSS JOIN dates
-         CROSS JOIN times;
+    DATE_ADD(CURDATE(), INTERVAL days.day_idx DAY) AS date,
+  -- 11:00 ~ 20:00 (10타임)
+  SEC_TO_TIME((11 + times.time_idx) * 3600) AS time,
+
+  -- ✅ 0~5 골고루: 반드시 time_idx가 들어가야 합니다(그리고 숫자여야 함)
+  MOD(
+    ((restaurants.rid - 1) * 70)
+    + ((days.day_idx - 1) * 10)
+    + CAST(times.time_idx AS SIGNED),
+    6
+  ) AS count,
+
+  0 AS version,
+  restaurants.rid AS restaurant_id
+FROM restaurants
+    CROSS JOIN days
+    CROSS JOIN times;

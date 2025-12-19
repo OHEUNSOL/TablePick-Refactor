@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://${RDS_ENDPOINT:localhost}:3306/portfolio?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true
+    url: jdbc:mysql://${RDS_ENDPOINT:localhost:3306}/portfolio?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true
     username: portfolio_user
     password: ${RDS_PASSWORD:portfolio1234}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -36,7 +36,9 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       # 여러 파티션에 메시지를 저장할 때의 방식 (라운드 로빈 방식)
       properties:
-        partitioner.class: org.apache.kafka.clients.producer.RoundRobinPartitioner
+        #partitioner.class: org.apache.kafka.clients.producer.RoundRobinPartitioner
+        batch-size: 16384
+        linger-ms: 10
 
   mail:
     host: localhost
