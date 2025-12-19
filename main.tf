@@ -79,6 +79,14 @@ resource "aws_security_group" "ec2" {
   description = "Security group for EC2"
   vpc_id      = aws_vpc.main.id
 
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    self        = true  # 같은 보안 그룹 인스턴스끼리 모든 포트 허용
+    description = "Allow all internal traffic within the same SG"
+  }
+
   # Spring Boot 메인 애플리케이션용 8080 포트
   ingress {
     from_port   = 8080
@@ -518,17 +526,16 @@ resource "aws_instance" "monitoring" {
                 scrape_interval: 15s
               scrape_configs:
                 - job_name: 'app-main'
+                  metrics_path: '/actuator/prometheus'
                   static_configs:
                     - targets: ['${aws_instance.app_main.private_ip}:8080']  # app-main private IP (메트릭 엔드포인트 가정)
                 - job_name: 'app-mail'
+                  metrics_path: '/actuator/prometheus'
                   static_configs:
                     - targets: ['${aws_instance.app_mail.private_ip}:8081']  # app-mail private IP (메트릭 엔드포인트 가정)
                 - job_name: 'redis'
-                    static_configs:
-                      - targets: ['${aws_instance.redis.private_ip}:9121']
-                        labels:
-                          instance: "portfolio-redis"
-                          application: "redis"
+                  static_configs:
+                    - targets: ['${aws_instance.redis.private_ip}:9121']
               EOC
 
               # Prometheus Docker로 띄우기
