@@ -41,7 +41,7 @@ spring:
         linger-ms: 10
 
   mail:
-    host: mailhog
+    host: localhost
     port: 1025        # MailHog 기본 SMTP 포트
     username:
     password:
