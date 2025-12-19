@@ -536,6 +536,8 @@ resource "aws_instance" "monitoring" {
                 - job_name: 'redis'
                   static_configs:
                     - targets: ['${aws_instance.redis.private_ip}:9121']
+                      labels:
+                        namespace: "redis"
               EOC
 
               # Prometheus Docker로 띄우기
