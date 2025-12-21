@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -45,6 +47,7 @@ public class ReservationFacadeV2 {
 
     public void createReservationPessimistic(String userName, ReservationRequestDto request) {
         Reservation reservation = reservationServiceV3.createReservationPessimistic(userName, request);
+
 
         reservationNotificationService
                 .sendReservationCreatedNotificationAsync(reservation.getId());

@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -34,16 +36,17 @@ public class EmailTestController {
         return ResponseEntity.ok().build();
     }
 
+
     /**
      * 비동기(@Async) 메일 발송 테스트
      */
     @PostMapping("/reservations/{reservationId}/async")
     public ResponseEntity<Void> sendAsync(@PathVariable Long reservationId) {
-
         reservationNotificationService.sendReservationCreatedNotificationAsync(reservationId);
 
         return ResponseEntity.ok().build();
     }
+
 
     @PostMapping("/reservations/{reservationId}/kafka")
     public ResponseEntity<Void> sendKafka(@PathVariable Long reservationId) {
