@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -26,6 +28,8 @@ public class ReservationFacadeV1 {
             try {
                 // 1. 트랜잭션 안에서 예약 + 결제 처리
                 Reservation reservation = reservationServiceV3.createReservationOptimistic(userName, request);
+
+
                 log.info("예약 생성 성공 - username: {}, 총 시도횟수: {}",
                         userName, retryCount + 1);
                 // 2. 트랜잭션 밖에서 알림 실행
@@ -45,6 +49,7 @@ public class ReservationFacadeV1 {
 
     public void createReservationPessimistic(String userName, ReservationRequestDto request) {
         Reservation reservation = reservationServiceV3.createReservationPessimistic(userName, request);
+
 
         reservationNotificationService
                 .sendReservationCreatedNotification(reservation.getId());

@@ -22,8 +22,7 @@ const profiles = {
         startVUs: 0,
         stages: [
             { duration: '10s', target: 10 },  // 웜업
-            { duration: '20s', target: 200 }, // 폭주
-            { duration: '10s', target: 200 }, // 유지
+            { duration: '20s', target: 100 }, // 폭주
             { duration: '10s', target: 0 },   // 종료
         ],
     },
@@ -58,6 +57,10 @@ function buildUrl(suffix) {
 export function sendSync() {
     const res = http.post(buildUrl('sync'), null);
     check(res, { 'sync 2xx': (r) => r.status >= 200 && r.status < 300 });
+
+    if (LOAD_PROFILE === 'safety') {
+        sleep(0.8);  // 0.3s 정도 대기 → VU 20이면 대략 60~70 rps 수준
+    }
 }
 
 export function sendAsync() {
@@ -68,8 +71,8 @@ export function sendAsync() {
         'async failed (500/Timeout)': (r) => r.status >= 500
     });
 
-    if (__ENV.PROFILE === 'safety') {
-        sleep(1);
+    if (LOAD_PROFILE === 'safety') {
+        sleep(0.8);
     }
 }
 

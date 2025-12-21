@@ -326,8 +326,6 @@ resource "aws_instance" "app_main" {
               sudo systemctl start amazon-cloudwatch-agent
               sudo systemctl enable amazon-cloudwatch-agent
 
-              # MailHog Docker로 띄우기
-              docker run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
               EOF
 
   tags = {
@@ -421,9 +419,6 @@ resource "aws_instance" "app_mail" {
               sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
               sudo systemctl start amazon-cloudwatch-agent
               sudo systemctl enable amazon-cloudwatch-agent
-
-              # MailHog Docker로 띄우기
-              docker run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
               EOF
 
   tags = {
