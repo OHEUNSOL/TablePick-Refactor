@@ -75,21 +75,5 @@ TablePick은 대규모 트래픽을 처리할 수 있는 **레스토랑 예약·
 
 ---
 
-### 🚀 CI/CD 배포 효율 개선 (결제 서버 분리 효과)
-
-- **배경**  
-  - 기존 단일 서버 구조에서는 예약/결제 코드가 한 레포에 묶여 있어, 결제 로직 수정 시 전체 서버를 다시 빌드/배포해야 했음.
-  - 결제 서버를 별도 마이크로서비스로 분리하면서 **독립 배포 가능**.
-
-- **결과 (GitHub Actions 빌드 시간 비교)**
-  - 분리 전: 전체 서버 빌드/배포 **2분 41초**  
-  - 분리 후: 결제 서버만 배포 → **1분 46초**  
-
-<img width="319" height="153" alt="image" src="https://github.com/user-attachments/assets/86686b35-1069-4b20-85f3-3e96e7f0ad87" />
-
-> 결제 서버 분리를 통해 **배포 속도가 약 35% 개선**되었으며, 운영 시 장애 영향 범위도 축소.
-
----
-
 ## 🎥 시연 영상
 https://drive.google.com/file/d/1ZoBAgl4vPlDY5-KWDxwHWnN-WZnCq-e9/view?usp=sharing
