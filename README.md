@@ -75,39 +75,7 @@ TablePick은 대규모 트래픽을 처리할 수 있는 **레스토랑 예약·
 
 ---
 
-## ✅ 개선 사항
 
-
-### 1) 대량 **데이터 삽입** 성능 개선
-- **문제**
-  - 예약 슬롯은 한 달 기준 약 **4,987,200건** 생성 필요.
-  - 초기 구현(`JPA + IDENTITY`)은 **개별 INSERT** 방식이라 대량 삽입 시 병목 발생.  
-    → 실제 실행 결과: **2,010,952ms (약 33분 31초 소요)**
-
-    <img width="429" height="496" alt="image" src="https://github.com/user-attachments/assets/403cd829-45e0-4148-9c8a-59dde95ab22c" />
-
-
-- **해결**
-  - `JdbcTemplate` 기반으로 전환하고 **Batch(3000)** 적용.
-
-- **결과**
-  | 방식 | 실행 시간 | 개선율 |
-  |------|-----------|--------|
-  | JPA + IDENTITY | 2,010,952 ms | - |
-  | JdbcTemplate | 73,243 ms | 약 96.36% 개선 |
-  | JdbcTemplate + Batch(3000) | 48,092 ms | 약 97.61% 개선 |
-
-  - 추가로 **멀티스레드 병렬 처리 / 체크포인트 기반 롤백** 설계안을 마련해 대규모 트래픽 대비.
-
-- **실행 결과 캡처**
-  <img width="224" height="114" alt="image" src="https://github.com/user-attachments/assets/a9d38660-5bf1-462f-b894-d2acf541a149" />
-  <img width="236" height="110" alt="image" src="https://github.com/user-attachments/assets/bffc59de-f5f3-4ebc-95a9-4683b004d179" />
-
-- **추가 계획**
-  - **Spring Batch / Quartz**로 삽입 스케줄링 최적화.  
-  - 초대용량 환경에서는 **Kafka 기반 비동기 처리** 도입 검토.
-
----
 
 ### 2) **예약 동시성** & 트랜잭션 범위 최적화
 
