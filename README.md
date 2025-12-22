@@ -52,7 +52,7 @@ TablePick은 대규모 트래픽을 처리할 수 있는 **레스토랑 예약·
 
 ## 📐 아키텍처
 
-<img width="2724" height="3768" alt="image" src="https://github.com/user-attachments/assets/df0ed57c-c6a1-421d-80f1-0f59f91cf2db" />
+<img width="700" height="1000" alt="image" src="https://github.com/user-attachments/assets/df0ed57c-c6a1-421d-80f1-0f59f91cf2db" />
 
 ---
 
