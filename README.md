@@ -63,7 +63,7 @@ TablePick은 대규모 트래픽을 처리할 수 있는 **레스토랑 예약·
 
 ## 🗺 ERD
 
-<img width="1001" height="665" alt="image" src="https://github.com/user-attachments/assets/fc22a05c-e1a5-4b04-9b2d-5313e83506d1" />
+<img width="956" height="631" alt="image" src="https://github.com/user-attachments/assets/98eae0a3-161d-4ffd-a7dd-d5eb58a260d8" />
 
 ---
 
