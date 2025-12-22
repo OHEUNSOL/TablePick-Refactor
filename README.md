@@ -24,11 +24,6 @@ TablePick은 대규모 트래픽을 처리할 수 있는 **레스토랑 예약·
 
 ## 🛠 기술 스택
 
-### 🔹 프론트엔드
-![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
-
 ### 🔹 백엔드
 ![Java](https://img.shields.io/badge/Java%2021-FF7800?style=flat&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot%203.4.5-6DB33F?style=flat&logo=springboot&logoColor=white)
@@ -57,7 +52,7 @@ TablePick은 대규모 트래픽을 처리할 수 있는 **레스토랑 예약·
 
 ## 📐 아키텍처
 
-<img width="341" height="423" alt="image" src="https://github.com/user-attachments/assets/18f1bfd1-fb14-4006-a9f6-cb4046f28a08" />
+<img width="2724" height="3768" alt="image" src="https://github.com/user-attachments/assets/df0ed57c-c6a1-421d-80f1-0f59f91cf2db" />
 
 ---
 
